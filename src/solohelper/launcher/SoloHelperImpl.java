@@ -42,13 +42,11 @@ public class SoloHelperImpl implements SoloHelper {
 	
 	@Override
 	public void process() throws IOException {
-		this.musicPlayer.play();
 		do {
 			System.out.println("Enter command :");
 			commandInterpreter.readCommandLine();
 			CommandCode advancedCommand = commandInterpreter.getCommandCode();
 			CommandArgumentsImpl commandArguments = commandInterpreter.getCommandArguments();
-			
 			executeCommand(advancedCommand, commandArguments);
 		} while (true);
 	}

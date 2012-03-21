@@ -55,4 +55,10 @@ public class MusicPlayerSettingsImpl implements MusicPlayerSettings {
 	public int getStartFramePosition() {
 		return this.startFramePosition;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("Looping Mode %s, Window start %s, Window size %s", 
+			this.loopingMode, startFramePosition, getLoopingSliceFramesCount());
+	}
 }

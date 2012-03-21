@@ -19,8 +19,28 @@ package solohelper.command;
 public interface CommandLibrary {
 	
 	public enum CommandCode {
+		/**
+		 * Quits the SoloHelper program.
+		 */
 		QUIT("quit", 0),
+		
+		/**
+		 * Will start playing over the last known window if
+		 * the current state of the play is inactive. No effect
+		 * if playback is already happening.
+		 */
+		PLAY("play", 0),
+		
+		/**
+		 * Get current information about the player, window etc.
+		 */
+		INFO("info", 0),
+		
+		/**
+		 * Change the loop mode to on or off depending on the argument.
+		 */
 		TOGGLE_LOOP_MODE("loop", 1);
+		
 		
 		private final String commandWord;
 		private final int numArguments;

@@ -24,8 +24,8 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	private final Factory musicFileFactory;
 	private Mp3MusicFile mp3MusicFile;
 	private final AdvancedMp3Player advancedMp3Player;
-	private StateOfPlay stateOfPlay;
 	private final MusicPlayerSettings musicPlayerSettings;
+	private String filePath;
 
 	@Inject
 	public SimpleMusicPlayer(Mp3MusicFile.Factory musicFileFactory,
@@ -35,7 +35,6 @@ public class SimpleMusicPlayer implements MusicPlayer {
 		this.musicFileFactory = musicFileFactory;
 		this.advancedMp3Player = advancedMp3Player;
 		this.musicPlayerSettings = musicPlayerSettings;
-		stateOfPlay = StateOfPlay.INACTIVE;
 	}
 	
 	@Override
@@ -45,14 +44,17 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	
 	@Override
 	public void loadMusicFile(String filePath) {
+		this.filePath = filePath;
 		mp3MusicFile = musicFileFactory.create(filePath);
 		System.out.println("loaded a mp3 music file " + mp3MusicFile.getFilePath());
 		this.advancedMp3Player.load(mp3MusicFile);
+		this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
 	}
 	
 	@Override
 	public void play() {
-		stateOfPlay = StateOfPlay.ACTIVE;
+		System.out.println("Starting play.");
+		this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
 		this.advancedMp3Player.play(
 				this.musicPlayerSettings.getStartFramePosition(),
 				this.musicPlayerSettings.getStartFramePosition() +
@@ -60,29 +62,15 @@ public class SimpleMusicPlayer implements MusicPlayer {
 				);
 	}
 	
-	public void loop() {
-		stateOfPlay = StateOfPlay.ACTIVE;
-		this.advancedMp3Player.loop();
-	}
-	
-	@Override
-	public void pause() {
-		stateOfPlay = StateOfPlay.INACTIVE;
-	}
-
 	@Override
 	public StateOfPlay getStateOfPlay() {
-		return stateOfPlay;
+		return this.advancedMp3Player.getStateOfPlay();
 	}
 	
 	@Override
 	public void setLoopingMode(LoopingMode loopingMode) {
 		this.musicPlayerSettings.setLoopingMode(loopingMode);
-		if (this.musicPlayerSettings.getLoopingMode() == LoopingMode.ON) {
-			setPlayBackListener(new LoopingListener());
-		} else {
-			setPlayBackListener(new NonLoopingListener());
-		}
+		this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
 	}
 
 	@Override
@@ -95,28 +83,32 @@ public class SimpleMusicPlayer implements MusicPlayer {
 				setLoopingMode(LoopingMode.ON);
 			} else if (argumentsList.get(0).equalsIgnoreCase("off")) {
 				setLoopingMode(LoopingMode.OFF);
-			} 
-		}
-	}
-	
-	private void setPlayBackListener(PlaybackListener playbackListener) {
-		this.advancedMp3Player.setPlayBackListener(playbackListener);
-	}
-	
-	private class LoopingListener extends PlaybackListener {
-		@Override
-		public void playbackFinished(PlaybackEvent playbackEvent) {
-			super.playbackFinished(playbackEvent);
-			loop();
+			}
+			return;
 		}
 		
-		@Override
-		public void playbackStarted(PlaybackEvent playbackEvent) {
-			super.playbackStarted(playbackEvent);
-			// nothing to do for now.
+		if (command == CommandCode.PLAY) {
+			// check the current state of play now.
+			if (getStateOfPlay() == StateOfPlay.ACTIVE || 
+					getStateOfPlay() == StateOfPlay.PAUSED) {
+				return;
+			} else {
+				loadMusicFile(filePath);
+				play();
+			}
+			return;
+		}
+		
+		if (command == CommandCode.INFO) {
+			printInfo();
+			return;
 		}
 	}
 	
-	private class NonLoopingListener extends PlaybackListener {
+	private void printInfo() {
+		System.out.println("******************************");
+		System.out.println(String.format("State of play [%s] \n Music player settings [%s]", 
+			getStateOfPlay(), this.musicPlayerSettings));
+		System.out.println("******************************");
 	}
 }

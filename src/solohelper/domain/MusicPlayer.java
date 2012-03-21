@@ -20,8 +20,6 @@ public interface MusicPlayer {
 	
 	StateOfPlay getStateOfPlay();
 
-	void pause();
-
 	void issueCommand(CommandCode command, CommandArguments commandArguments);
 	
 	void setLoopingMode(LoopingMode loopingMode);

@@ -7,9 +7,12 @@ import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 
 import javazoom.jl.player.advanced.AdvancedPlayer;
+import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
-import solohelper.command.CommandLibrary.CommandCode;
 import solohelper.domain.MusicFile;
+import solohelper.domain.MusicPlayerSettings;
+import solohelper.domain.StateOfPlay;
+import solohelper.domain.MusicPlayerSettings.LoopingMode;
 
 /**
  * Wrapper over a library player.
@@ -24,10 +27,13 @@ public class AdvancedMp3Player {
 	private static final long pauseMillis = 1000;
 	private int startFramePosition;
 	private int endFramePosition;
-	
+	private StateOfPlay stateOfPlay;
+	private PlaybackListener playbackListener;
+
 	@Inject
 	public AdvancedMp3Player(ExecutorService executorService) {
 		this.executorService = executorService;
+		stateOfPlay = StateOfPlay.INACTIVE;
 	}
 		
 	public void load(MusicFile musicFile) {
@@ -43,7 +49,22 @@ public class AdvancedMp3Player {
         }
 	}
 	
+	public StateOfPlay getStateOfPlay() {
+		return stateOfPlay;
+	}
+	
+	public void applyMusicPlayerSettings(MusicPlayerSettings musicPlayerSettings) {
+		if (musicPlayerSettings.getLoopingMode() == LoopingMode.ON) {
+			setPlayBackListener(new LoopingListener());
+		} else {
+			setPlayBackListener(new NonLoopingListener());
+		}
+	}
+	
 	public void setPlayBackListener(PlaybackListener playbackListener) {
+		this.playbackListener = playbackListener;
+		
+		// Also update the player ?? do we check state ??
 		this.player.setPlayBackListener(playbackListener);
 	}
 
@@ -55,10 +76,9 @@ public class AdvancedMp3Player {
 	}
 	
 	public void loop() {
-		PlaybackListener playBackListener = this.player.getPlayBackListener();
 		close();
 		load(this.musicFile);
-		this.setPlayBackListener(playBackListener);
+		this.setPlayBackListener(playbackListener);
 		pause();
 		play(startFramePosition, endFramePosition);
 	}
@@ -68,6 +88,27 @@ public class AdvancedMp3Player {
 	}
 	
     public void close() { if (player != null) player.close(); }
+    
+	private class LoopingListener extends PlaybackListener {
+		@Override
+		public void playbackFinished(PlaybackEvent playbackEvent) {
+			super.playbackFinished(playbackEvent);
+			loop();
+		}
+		
+		@Override
+		public void playbackStarted(PlaybackEvent playbackEvent) {
+			super.playbackStarted(playbackEvent);
+			// nothing to do for now.
+		}
+	}
+	
+	private class NonLoopingListener extends PlaybackListener {
+	}
+    
+    
+    
+    
     
     public class PauseTask implements Runnable {
 
@@ -80,7 +121,9 @@ public class AdvancedMp3Player {
 		@Override
 		public void run() {
 			try {
+				stateOfPlay = StateOfPlay.PAUSED;
 				Thread.sleep(pauseMillis);
+				stateOfPlay = StateOfPlay.INACTIVE;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -98,8 +141,15 @@ public class AdvancedMp3Player {
     	
 		@Override
 		public void run() {
-			try { player.play(startFrame, endFrame); }
-            catch (Exception e) { System.out.println(e); }			
+			try { 
+				System.out.println(
+					String.format("Will play the window [%s, %s]", startFrame, endFrame));
+				stateOfPlay = StateOfPlay.ACTIVE;
+				player.play(startFrame, endFrame);
+				stateOfPlay = StateOfPlay.INACTIVE;
+			} catch (Exception e) { 
+				System.out.println(e); 
+			}			
 		}
 	}
 }

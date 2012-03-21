@@ -2,5 +2,6 @@ package solohelper.domain;
 
 public enum StateOfPlay {
 	ACTIVE,
-	INACTIVE;
+	INACTIVE,
+	PAUSED;
 }

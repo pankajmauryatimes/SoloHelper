@@ -2,6 +2,7 @@ package solohelper.launcher;
 
 import solohelper.domain.LoopingMode;
 import solohelper.domain.MusicPlayerSettings;
+import solohelper.player.MusicPlayerSettingsImpl;
 
 
 public class MusicClipImpl implements MusicClip {
@@ -18,6 +19,16 @@ public class MusicClipImpl implements MusicClip {
 		setLoopingSliceFramesCount(musicPlayerSettings.getLoopingSliceFramesCount());
 		setPauseMillis(musicPlayerSettings.getPauseMillis());
 		setStartFramePosition(musicPlayerSettings.getStartFramePosition());
+	}
+	
+	@Override
+	public MusicPlayerSettings getMusicPlayerSettings() {
+		MusicPlayerSettingsImpl settings = new MusicPlayerSettingsImpl();
+		settings.setLoopingMode(loopingMode);
+		settings.setLoopingSliceFramesCount(loopingSliceFrameCount);
+		settings.setPauseMillis(pauseMillis);
+		settings.setStartFramePosition(startFramePosition);
+		return settings;
 	}
 	
 	@Override

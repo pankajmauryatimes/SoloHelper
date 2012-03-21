@@ -24,8 +24,8 @@ public class SoloHelperImpl implements SoloHelper {
 	private final MusicPlayer musicPlayer;
 	private final CommandInterpreter commandInterpreter;
 	private final CommandExecutor commandExecutor;
-	private final Map<String, MusicPlayerSettings> clipMap 
-		= new TreeMap<String, MusicPlayerSettings>();
+	private final Map<String, MusicClip> clipMap 
+		= new TreeMap<String, MusicClip>();
 
 	@Inject
 	public SoloHelperImpl(MusicPlayer musicPlayer,
@@ -67,11 +67,14 @@ public class SoloHelperImpl implements SoloHelper {
 			System.exit(0);
 		} else if (command == CommandCode.SAVE_CLIP) {
 				String clipLabel = commandArguments.getArgumentsList().get(0);
-				clipMap.put(clipLabel, this.musicPlayer.getMusicPlayerSettings());
+				
+				clipMap.put(clipLabel, 
+						new MusicClipImpl(clipLabel, this.musicPlayer.getMusicPlayerSettings()));
 				return;
 		} else if (command == CommandCode.LOAD_CLIP) {
 			String clipLabel = commandArguments.getArgumentsList().get(0);
-			this.musicPlayer.setMusicPlayerSettings(clipMap.get(clipLabel));
+			MusicClip musicClip = clipMap.get(clipLabel);
+			this.musicPlayer.setMusicPlayerSettings(musicClip.getMusicPlayerSettings());
 			return;
 		} else if (command == CommandCode.SAVE_INFO) {
 			String configFileName = commandArguments.getArgumentsList().get(0);
@@ -84,13 +87,6 @@ public class SoloHelperImpl implements SoloHelper {
 		}
 	}
 	
-	public List<MusicClip> getClips() {
-		List<MusicClip> clipList = new ArrayList<MusicClip>();
-		for (Map.Entry<String, MusicPlayerSettings> entry : clipMap.entrySet()) {
-			clipList.add(new MusicClipImpl(entry.getKey(), entry.getValue()));
-		}
-		return clipList;
-	}
 	
 	public void writeClips(String configFileName) {
 		try {
@@ -98,7 +94,7 @@ public class SoloHelperImpl implements SoloHelper {
 	        BufferedOutputStream bos = new BufferedOutputStream(fos);
 	        OutputStreamWriter osw = new OutputStreamWriter(bos);
 	        BufferedWriter writer = new BufferedWriter(osw);
-	        for (MusicClip clip : getClips()) {
+	        for (MusicClip clip : clipMap.values()) {
 	        	writer.write(clip.toString());
 	        }
 	        writer.flush();

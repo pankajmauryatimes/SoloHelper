@@ -1,6 +1,7 @@
 package solohelper.launcher;
 
 import solohelper.domain.LoopingMode;
+import solohelper.domain.MusicPlayerSettings;
 
 
 /**
@@ -29,4 +30,6 @@ public interface MusicClip {
 	String getLabel();
 
 	void setLabel(String label);
+
+	MusicPlayerSettings getMusicPlayerSettings();
 }

@@ -11,6 +11,7 @@ import solohelper.command.CommandLibrary.CommandCode;
 import solohelper.domain.MusicPlayer;
 import solohelper.domain.MusicPlayerSettings;
 import solohelper.domain.MusicPlayerSettings.LoopingMode;
+import solohelper.domain.MusicPlayerSettingsManager;
 import solohelper.domain.StateOfPlay;
 import solohelper.player.Mp3MusicFile.Factory;
 
@@ -24,22 +25,25 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	private final Factory musicFileFactory;
 	private Mp3MusicFile mp3MusicFile;
 	private final AdvancedMp3Player advancedMp3Player;
-	private final MusicPlayerSettings musicPlayerSettings;
+//	private final MusicPlayerSettings musicPlayerSettings;
 	private String filePath;
+	private final MusicPlayerSettingsManager musicPlayerSettingsManager;
 
 	@Inject
 	public SimpleMusicPlayer(Mp3MusicFile.Factory musicFileFactory,
 			Mp3Player mp3Player,
 			AdvancedMp3Player advancedMp3Player,
-			MusicPlayerSettings musicPlayerSettings) {
+			MusicPlayerSettings musicPlayerSettings,
+			MusicPlayerSettingsManagerImpl.Factory musicPlayerSettingsManagerFactory) {
 		this.musicFileFactory = musicFileFactory;
 		this.advancedMp3Player = advancedMp3Player;
-		this.musicPlayerSettings = musicPlayerSettings;
+//		this.musicPlayerSettings = musicPlayerSettings;
+		this.musicPlayerSettingsManager = musicPlayerSettingsManagerFactory.create(musicPlayerSettings);
 	}
 	
 	@Override
 	public MusicPlayerSettings getMusicPlayerSettings() {
-		return this.musicPlayerSettings;
+		return this.musicPlayerSettingsManager.getMusicPlayerSettings();
 	}
 	
 	@Override
@@ -48,7 +52,8 @@ public class SimpleMusicPlayer implements MusicPlayer {
 		mp3MusicFile = musicFileFactory.create(filePath);
 		System.out.println("loaded a mp3 music file " + mp3MusicFile.getFilePath());
 		this.advancedMp3Player.load(mp3MusicFile);
-		this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
+		this.advancedMp3Player.applyMusicPlayerSettings(
+				musicPlayerSettingsManager.getMusicPlayerSettings());
 	}
 	
 	@Override
@@ -64,8 +69,9 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	
 	@Override
 	public void setLoopingMode(LoopingMode loopingMode) {
-		this.musicPlayerSettings.setLoopingMode(loopingMode);
-		this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
+		this.musicPlayerSettingsManager.updateMusicPlayerSettingsLoopingMode(loopingMode);
+		this.advancedMp3Player.applyMusicPlayerSettings(
+				musicPlayerSettingsManager.getMusicPlayerSettings());
 	}
 
 	@Override
@@ -102,21 +108,26 @@ public class SimpleMusicPlayer implements MusicPlayer {
 		if (command == CommandCode.SLIDE_WINDOW) {
 			Direction direction = getDirection(argumentsList.get(0));
 			int frameCount = Integer.parseInt(argumentsList.get(1));
-			updateMusicPlayerSettingsForSlide(direction, frameCount);
+			this.musicPlayerSettingsManager.updateMusicPlayerSettingsForSlideWindow(direction, frameCount);
+			this.advancedMp3Player.applyMusicPlayerSettings(
+					musicPlayerSettingsManager.getMusicPlayerSettings());
 			return;
 		}
 		
 		if (command == CommandCode.SET_PAUSE) {
 			int pauseMillis = Integer.parseInt(argumentsList.get(0));
-			this.musicPlayerSettings.setPauseMillis(pauseMillis);
-			this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
+			this.musicPlayerSettingsManager.updateMusicPlayerSettingsForPause(pauseMillis);
+			this.advancedMp3Player.applyMusicPlayerSettings(
+					musicPlayerSettingsManager.getMusicPlayerSettings());
 			return;
 		}
 		
 		if (command == CommandCode.ALTER_WINDOW) {
 			Direction direction = getDirection(argumentsList.get(0));
 			int frameCount = Integer.parseInt(argumentsList.get(1));
-			updateMusicPlayerSettingsForAlter(direction, frameCount);
+			this.musicPlayerSettingsManager.updateMusicPlayerSettingsForAlterWindow(direction, frameCount);
+			this.advancedMp3Player.applyMusicPlayerSettings(
+					musicPlayerSettingsManager.getMusicPlayerSettings());
 			return;
 		}
 	}
@@ -134,40 +145,10 @@ public class SimpleMusicPlayer implements MusicPlayer {
 		return direction;
 	}
 	
-	private void updateMusicPlayerSettingsForSlide(Direction direction, int frameCount) {
-		int startFramePosition = this.musicPlayerSettings.getStartFramePosition();
-		
-		if (direction == Direction.FORWARD) {
-			this.musicPlayerSettings.setStartFramePosition(
-					startFramePosition + frameCount);
-		} else {
-			int safeStartFramePosition 
-			= startFramePosition > frameCount ?  startFramePosition - frameCount : 0; 
-			this.musicPlayerSettings.setStartFramePosition(safeStartFramePosition);
-		}
-		this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
-	}
-	
-	private void updateMusicPlayerSettingsForAlter(Direction direction, int frameCount) {
-		int startFramePosition = this.musicPlayerSettings.getStartFramePosition();
-		int loopingSliceFramesCount = this.musicPlayerSettings.getLoopingSliceFramesCount();
-		
-		this.musicPlayerSettings.setLoopingSliceFramesCount(
-				loopingSliceFramesCount + frameCount);
-		
-		if (direction == Direction.BACKWARD) {
-			int safeStartFramePosition 
-				= startFramePosition > frameCount ?  startFramePosition - frameCount : 0; 
-			this.musicPlayerSettings.setStartFramePosition(safeStartFramePosition);
-
-		} 
-		this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
-	}
-	
 	private void printInfo() {
 		System.out.println("******************************");
 		System.out.println(String.format("State of play [%s] \n Music player settings [%s]", 
-			getStateOfPlay(), this.musicPlayerSettings));
+			getStateOfPlay(), this.musicPlayerSettingsManager.getMusicPlayerSettings()));
 		System.out.println("******************************");
 	}
 }

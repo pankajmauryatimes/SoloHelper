@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import javazoom.jl.player.Player;
 import solohelper.domain.MusicFile;
-import solohelper.player.AdvancedMp3Player.PlayMp3Task;
 
 /**
  * Wrapper over a library player.

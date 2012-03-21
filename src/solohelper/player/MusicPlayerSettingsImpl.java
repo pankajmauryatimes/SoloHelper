@@ -59,8 +59,8 @@ public class MusicPlayerSettingsImpl implements MusicPlayerSettings {
 	
 	@Override
 	public String toString() {
-		return String.format("Looping Mode %s, Window start %s, Window size %s", 
-			this.loopingMode, startFramePosition, getLoopingSliceFramesCount());
+		return String.format("Looping Mode %s, Window start %s, Window size %s, pause %s", 
+			this.loopingMode, startFramePosition, getLoopingSliceFramesCount(), pauseMillis);
 	}
 
 	@Override
@@ -71,6 +71,5 @@ public class MusicPlayerSettingsImpl implements MusicPlayerSettings {
 	@Override
 	public void setPauseMillis(int pauseMillis) {
 		this.pauseMillis = pauseMillis;
-		
 	}
 }

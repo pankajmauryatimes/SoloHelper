@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import solohelper.domain.MusicFile;
 import solohelper.domain.MusicPlayer;
 import solohelper.domain.MusicPlayerSettings;
+import solohelper.domain.MusicPlayerSettingsManager;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
@@ -21,9 +22,15 @@ public class PlayerModule extends AbstractModule {
 	protected void configure() {
 		bind(MusicPlayer.class).to(SimpleMusicPlayer.class);
 		bind(MusicPlayerSettings.class).to(MusicPlayerSettingsImpl.class);
+		
 		install(new FactoryModuleBuilder()
 			.implement(MusicFile.class, Mp3MusicFile.class)
 			.build(Mp3MusicFile.Factory.class));
+		
+		install(new FactoryModuleBuilder()
+			.implement(MusicPlayerSettingsManager.class, MusicPlayerSettingsManagerImpl.class)
+			.build(MusicPlayerSettingsManagerImpl.Factory.class));
+		
 		bind(ExecutorService.class)
 			.toInstance(Executors.newSingleThreadExecutor());
 	}

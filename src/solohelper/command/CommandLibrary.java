@@ -8,10 +8,11 @@ package solohelper.command;
  * alter_window forward/backward <frame_count>
  * play
  * slide_window forward/backward <frame_count>
- * save_window label
- * goto_window label
+ * save_settings label
+ * load_settings label
  * info
- * save_info
+ * save_info filename
+ * load_info filename
  * set_pause millis
  * 
  * @author pankajm
@@ -58,7 +59,28 @@ public interface CommandLibrary {
 		 * Alters the current window in the given direction by the
 		 * given frame count. Cannot alter in back before 0 count.
 		 */
-		ALTER_WINDOW("alter_window", 2);
+		ALTER_WINDOW("alter_window", 2),
+		
+		/**
+		 * Saves the current music player settings with the given label.
+		 */
+		SAVE_SETTINGS("save_settings", 1),
+		
+		/**
+		 * Loads the music player settings previously saved with the given label.
+		 */
+		LOAD_SETTINGS("load_settings", 1),
+		
+		/**
+		 * Saves all the currently saved in-memory music player settings
+		 * to a file.
+		 */
+		SAVE_INFO("save_info", 1),
+		
+		/**
+		 * Loads the info saved previously in a file.
+		 */
+		LOAD_INFO("load_info", 1);
 		
 		private final String commandWord;
 		private final int numArguments;

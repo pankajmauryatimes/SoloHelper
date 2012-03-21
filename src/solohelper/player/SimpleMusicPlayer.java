@@ -100,17 +100,9 @@ public class SimpleMusicPlayer implements MusicPlayer {
 		}
 		
 		if (command == CommandCode.SLIDE_WINDOW) {
-			// parse direction
-			Direction direction = null;
-			if (argumentsList.get(0).equalsIgnoreCase("forward")) {
-				direction = CommandConfigurations.Direction.FORWARD;
-			} else if (argumentsList.get(0).equalsIgnoreCase("backward")) {
-				direction = CommandConfigurations.Direction.BACKWARD;
-			}
-			
-			// frame count
+			Direction direction = getDirection(argumentsList.get(0));
 			int frameCount = Integer.parseInt(argumentsList.get(1));
-			updateMusicPlayerSettings(direction, frameCount);
+			updateMusicPlayerSettingsForSlide(direction, frameCount);
 			return;
 		}
 		
@@ -118,10 +110,31 @@ public class SimpleMusicPlayer implements MusicPlayer {
 			int pauseMillis = Integer.parseInt(argumentsList.get(0));
 			this.musicPlayerSettings.setPauseMillis(pauseMillis);
 			this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
+			return;
+		}
+		
+		if (command == CommandCode.ALTER_WINDOW) {
+			Direction direction = getDirection(argumentsList.get(0));
+			int frameCount = Integer.parseInt(argumentsList.get(1));
+			updateMusicPlayerSettingsForAlter(direction, frameCount);
+			return;
 		}
 	}
 	
-	public void updateMusicPlayerSettings(Direction direction, int frameCount) {
+	/*
+	 * Parse direction
+	 */
+	private Direction getDirection(String directionString) {
+		Direction direction = null;
+		if (directionString.equalsIgnoreCase("forward")) {
+			direction = CommandConfigurations.Direction.FORWARD;
+		} else if (directionString.equalsIgnoreCase("backward")) {
+			direction = CommandConfigurations.Direction.BACKWARD;
+		}
+		return direction;
+	}
+	
+	private void updateMusicPlayerSettingsForSlide(Direction direction, int frameCount) {
 		int startFramePosition = this.musicPlayerSettings.getStartFramePosition();
 		
 		if (direction == Direction.FORWARD) {
@@ -132,6 +145,22 @@ public class SimpleMusicPlayer implements MusicPlayer {
 			= startFramePosition > frameCount ?  startFramePosition - frameCount : 0; 
 			this.musicPlayerSettings.setStartFramePosition(safeStartFramePosition);
 		}
+		this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
+	}
+	
+	private void updateMusicPlayerSettingsForAlter(Direction direction, int frameCount) {
+		int startFramePosition = this.musicPlayerSettings.getStartFramePosition();
+		int loopingSliceFramesCount = this.musicPlayerSettings.getLoopingSliceFramesCount();
+		
+		this.musicPlayerSettings.setLoopingSliceFramesCount(
+				loopingSliceFramesCount + frameCount);
+		
+		if (direction == Direction.BACKWARD) {
+			int safeStartFramePosition 
+				= startFramePosition > frameCount ?  startFramePosition - frameCount : 0; 
+			this.musicPlayerSettings.setStartFramePosition(safeStartFramePosition);
+
+		} 
 		this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
 	}
 	

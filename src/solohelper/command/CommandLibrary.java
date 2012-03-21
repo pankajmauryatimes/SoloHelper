@@ -5,8 +5,7 @@ package solohelper.command;
  * We intend to support the following list of commands:
  * 
  * loop on/off
- * expand_window forward/backward <frame_count>
- * contract_window forward/backward <frame_count>
+ * alter_window forward/backward <frame_count>
  * play
  * slide_window forward/backward <frame_count>
  * save_window label
@@ -39,7 +38,7 @@ public interface CommandLibrary {
 		
 		/**
 		 * Slides the current window in the given direction by the
-		 * given frame count. On hitting a boundary on either slide,
+		 * given frame count. On hitting a boundary on start,
 		 * the slide stops.
 		 */
 		SLIDE_WINDOW("slide_window", 2),
@@ -53,7 +52,13 @@ public interface CommandLibrary {
 		 * Sets the looping pause when the window end is reached before
 		 * resuming playback.
 		 */
-		SET_PAUSE("set_pause", 1);
+		SET_PAUSE("set_pause", 1),
+		
+		/**
+		 * Alters the current window in the given direction by the
+		 * given frame count. Cannot alter in back before 0 count.
+		 */
+		ALTER_WINDOW("alter_window", 2);
 		
 		private final String commandWord;
 		private final int numArguments;

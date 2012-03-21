@@ -67,8 +67,15 @@ public class AdvancedMp3Player {
 		// Also update the player ?? do we check state ??
 		this.player.setPlayBackListener(playbackListener);
 	}
+	
+	public void play(MusicPlayerSettings musicPlayerSettings) {
+		applyMusicPlayerSettings(musicPlayerSettings);
+		play(musicPlayerSettings.getStartFramePosition(),
+				musicPlayerSettings.getStartFramePosition() +
+				musicPlayerSettings.getLoopingSliceFramesCount());
+	}
 
-	public void play(int startFramePosition, int endFramePosition) {
+	private void play(int startFramePosition, int endFramePosition) {
 		this.startFramePosition = startFramePosition;
 		this.endFramePosition = endFramePosition;
 		this.executorService.execute(

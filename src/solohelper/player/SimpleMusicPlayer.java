@@ -48,18 +48,12 @@ public class SimpleMusicPlayer implements MusicPlayer {
 		mp3MusicFile = musicFileFactory.create(filePath);
 		System.out.println("loaded a mp3 music file " + mp3MusicFile.getFilePath());
 		this.advancedMp3Player.load(mp3MusicFile);
-		this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
 	}
 	
 	@Override
 	public void play() {
 		System.out.println("Starting play.");
-		this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
-		this.advancedMp3Player.play(
-				this.musicPlayerSettings.getStartFramePosition(),
-				this.musicPlayerSettings.getStartFramePosition() +
-				this.musicPlayerSettings.getLoopingSliceFramesCount()
-				);
+		this.advancedMp3Player.play(this.musicPlayerSettings);
 	}
 	
 	@Override

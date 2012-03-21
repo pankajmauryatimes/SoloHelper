@@ -8,8 +8,8 @@ package solohelper.command;
  * alter_window forward/backward <frame_count>
  * play
  * slide_window forward/backward <frame_count>
- * save_settings label
- * load_settings label
+ * save_clip label
+ * load_clip label
  * info
  * save_info filename
  * load_info filename
@@ -64,12 +64,12 @@ public interface CommandLibrary {
 		/**
 		 * Saves the current music player settings with the given label.
 		 */
-		SAVE_SETTINGS("save_settings", 1),
+		SAVE_CLIP("save_clip", 1),
 		
 		/**
 		 * Loads the music player settings previously saved with the given label.
 		 */
-		LOAD_SETTINGS("load_settings", 1),
+		LOAD_CLIP("load_clip", 1),
 		
 		/**
 		 * Saves all the currently saved in-memory music player settings

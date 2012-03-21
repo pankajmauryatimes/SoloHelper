@@ -1,7 +1,6 @@
 package solohelper.domain;
 
 import solohelper.command.CommandConfigurations.Direction;
-import solohelper.domain.MusicPlayerSettings.LoopingMode;
 
 public interface MusicPlayerSettingsManager {
 

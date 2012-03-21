@@ -1,6 +1,14 @@
 package solohelper.launcher;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 
@@ -9,12 +17,15 @@ import solohelper.command.CommandExecutor;
 import solohelper.command.CommandInterpreter;
 import solohelper.command.CommandLibrary.CommandCode;
 import solohelper.domain.MusicPlayer;
+import solohelper.domain.MusicPlayerSettings;
 
 public class SoloHelperImpl implements SoloHelper {
 
 	private final MusicPlayer musicPlayer;
 	private final CommandInterpreter commandInterpreter;
 	private final CommandExecutor commandExecutor;
+	private final Map<String, MusicPlayerSettings> clipMap 
+		= new TreeMap<String, MusicPlayerSettings>();
 
 	@Inject
 	public SoloHelperImpl(MusicPlayer musicPlayer,
@@ -54,8 +65,47 @@ public class SoloHelperImpl implements SoloHelper {
 	public void executeCommand(CommandCode command, CommandArgumentsImpl commandArguments) {
 		if (command == CommandCode.QUIT) {
 			System.exit(0);
+		} else if (command == CommandCode.SAVE_CLIP) {
+				String clipLabel = commandArguments.getArgumentsList().get(0);
+				clipMap.put(clipLabel, this.musicPlayer.getMusicPlayerSettings());
+				return;
+		} else if (command == CommandCode.LOAD_CLIP) {
+			String clipLabel = commandArguments.getArgumentsList().get(0);
+			this.musicPlayer.setMusicPlayerSettings(clipMap.get(clipLabel));
+			return;
+		} else if (command == CommandCode.SAVE_INFO) {
+			String configFileName = commandArguments.getArgumentsList().get(0);
+			writeClips(configFileName);
+		} else if (command == CommandCode.LOAD_INFO) {
+			String configFileName = commandArguments.getArgumentsList().get(0);
+			System.out.println("loading not yet implemented");
 		} else {
 			this.musicPlayer.issueCommand(command, commandArguments);	
 		}
+	}
+	
+	public List<MusicClip> getClips() {
+		List<MusicClip> clipList = new ArrayList<MusicClip>();
+		for (Map.Entry<String, MusicPlayerSettings> entry : clipMap.entrySet()) {
+			clipList.add(new MusicClipImpl(entry.getKey(), entry.getValue()));
+		}
+		return clipList;
+	}
+	
+	public void writeClips(String configFileName) {
+		try {
+			FileOutputStream fos = new FileOutputStream(configFileName);
+	        BufferedOutputStream bos = new BufferedOutputStream(fos);
+	        OutputStreamWriter osw = new OutputStreamWriter(bos);
+	        BufferedWriter writer = new BufferedWriter(osw);
+	        for (MusicClip clip : getClips()) {
+	        	writer.write(clip.toString());
+	        }
+	        writer.flush();
+	        writer.close();	
+		} catch (IOException e) {
+			System.out.println("Failed to write file " + configFileName);
+		}
+		
 	}
 }

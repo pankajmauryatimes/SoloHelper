@@ -1,13 +1,14 @@
+package solohelper.launcher;
 
-package solohelper.domain;
+import solohelper.domain.LoopingMode;
 
 
 /**
- * Represents the global settings of the {@link MusicPlayer}.
+ * Represents a clip from a music file.
  * 
  * @author pankajm
  */
-public interface MusicPlayerSettings {
+public interface MusicClip {
 
 	void setLoopingMode(LoopingMode loopingMode);
 
@@ -24,4 +25,8 @@ public interface MusicPlayerSettings {
 	int getPauseMillis();
 	
 	void setPauseMillis(int pauseMillis);
+	
+	String getLabel();
+
+	void setLabel(String label);
 }

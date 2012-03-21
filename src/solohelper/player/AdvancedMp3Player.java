@@ -9,10 +9,10 @@ import javax.inject.Inject;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
+import solohelper.domain.LoopingMode;
 import solohelper.domain.MusicFile;
 import solohelper.domain.MusicPlayerSettings;
 import solohelper.domain.StateOfPlay;
-import solohelper.domain.MusicPlayerSettings.LoopingMode;
 
 /**
  * Wrapper over a library player.

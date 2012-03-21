@@ -1,6 +1,7 @@
 package solohelper.launcher;
 
 import solohelper.command.CommandModule;
+import solohelper.domain.DomainModule;
 import solohelper.player.PlayerModule;
 
 import com.google.inject.AbstractModule;
@@ -17,6 +18,7 @@ public class SoloHelperModule extends AbstractModule {
 		bind(SoloHelper.class).to(SoloHelperImpl.class);
 		install(new PlayerModule());
 		install(new CommandModule());
+		install(new DomainModule());
 	}
 
 }

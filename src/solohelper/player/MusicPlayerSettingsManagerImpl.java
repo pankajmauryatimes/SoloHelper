@@ -2,12 +2,12 @@ package solohelper.player;
 
 import javax.inject.Inject;
 
-import com.google.inject.assistedinject.Assisted;
-
 import solohelper.command.CommandConfigurations.Direction;
+import solohelper.domain.LoopingMode;
 import solohelper.domain.MusicPlayerSettings;
 import solohelper.domain.MusicPlayerSettingsManager;
-import solohelper.domain.MusicPlayerSettings.LoopingMode;
+
+import com.google.inject.assistedinject.Assisted;
 
 public class MusicPlayerSettingsManagerImpl implements MusicPlayerSettingsManager {
 	

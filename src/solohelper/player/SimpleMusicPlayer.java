@@ -8,9 +8,9 @@ import solohelper.command.CommandArguments;
 import solohelper.command.CommandConfigurations;
 import solohelper.command.CommandConfigurations.Direction;
 import solohelper.command.CommandLibrary.CommandCode;
+import solohelper.domain.LoopingMode;
 import solohelper.domain.MusicPlayer;
 import solohelper.domain.MusicPlayerSettings;
-import solohelper.domain.MusicPlayerSettings.LoopingMode;
 import solohelper.domain.MusicPlayerSettingsManager;
 import solohelper.domain.StateOfPlay;
 import solohelper.player.Mp3MusicFile.Factory;
@@ -26,7 +26,8 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	private Mp3MusicFile mp3MusicFile;
 	private final AdvancedMp3Player advancedMp3Player;
 	private String filePath;
-	private final MusicPlayerSettingsManager musicPlayerSettingsManager;
+	private MusicPlayerSettingsManager musicPlayerSettingsManager;
+	private final solohelper.player.MusicPlayerSettingsManagerImpl.Factory musicPlayerSettingsManagerFactory;
 
 	@Inject
 	public SimpleMusicPlayer(Mp3MusicFile.Factory musicFileFactory,
@@ -36,12 +37,18 @@ public class SimpleMusicPlayer implements MusicPlayer {
 			MusicPlayerSettingsManagerImpl.Factory musicPlayerSettingsManagerFactory) {
 		this.musicFileFactory = musicFileFactory;
 		this.advancedMp3Player = advancedMp3Player;
+		this.musicPlayerSettingsManagerFactory = musicPlayerSettingsManagerFactory;
 		this.musicPlayerSettingsManager = musicPlayerSettingsManagerFactory.create(musicPlayerSettings);
 	}
 	
 	@Override
 	public MusicPlayerSettings getMusicPlayerSettings() {
 		return this.musicPlayerSettingsManager.getMusicPlayerSettings();
+	}
+	
+	@Override
+	public void setMusicPlayerSettings(MusicPlayerSettings musicPlayerSettings) {
+		this.musicPlayerSettingsManager = musicPlayerSettingsManagerFactory.create(musicPlayerSettings);
 	}
 	
 	@Override

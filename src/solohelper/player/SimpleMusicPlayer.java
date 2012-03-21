@@ -113,6 +113,12 @@ public class SimpleMusicPlayer implements MusicPlayer {
 			updateMusicPlayerSettings(direction, frameCount);
 			return;
 		}
+		
+		if (command == CommandCode.SET_PAUSE) {
+			int pauseMillis = Integer.parseInt(argumentsList.get(0));
+			this.musicPlayerSettings.setPauseMillis(pauseMillis);
+			this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
+		}
 	}
 	
 	public void updateMusicPlayerSettings(Direction direction, int frameCount) {

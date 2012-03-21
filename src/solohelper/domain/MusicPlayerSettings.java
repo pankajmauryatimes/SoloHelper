@@ -23,4 +23,8 @@ public interface MusicPlayerSettings {
 	void setStartFramePosition(int startFramePosition);
 
 	int getStartFramePosition();
+	
+	int getPauseMillis();
+	
+	void setPauseMillis(int pauseMillis);
 }

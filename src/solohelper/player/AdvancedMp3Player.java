@@ -24,7 +24,6 @@ public class AdvancedMp3Player {
 	private AdvancedPlayer player;
 	private final ExecutorService executorService;
 	private MusicFile musicFile;
-	private static final long pauseMillis = 1000;
 	private StateOfPlay stateOfPlay;
 	private PlaybackListener playbackListener;
 	private MusicPlayerSettings musicPlayerSettings;
@@ -86,7 +85,8 @@ public class AdvancedMp3Player {
 	}
 	
 	public void pause() {
-		this.executorService.execute(new PauseTask(pauseMillis));
+		this.executorService.execute(new PauseTask(
+				musicPlayerSettings.getPauseMillis()));
 	}
 	
     public void close() { if (player != null) player.close(); }

@@ -19,13 +19,15 @@ package solohelper.command;
 public interface CommandLibrary {
 	
 	public enum CommandCode {
-		QUIT("quit"),
-		TOGGLE_LOOP_MODE("loop");
+		QUIT("quit", 0),
+		TOGGLE_LOOP_MODE("loop", 1);
 		
 		private final String commandWord;
+		private final int numArguments;
 		
-		private CommandCode(String commandWord) {
+		private CommandCode(String commandWord, int numArguments) {
 			this.commandWord = commandWord;
+			this.numArguments = numArguments;
 		}
 		
 		public static CommandCode getCommandForWord(String word) {
@@ -35,6 +37,10 @@ public interface CommandLibrary {
 				}
 			}
 			return null;
+		}
+
+		public int getNumArguments() {
+			return numArguments;
 		}
 	}
 

@@ -1,6 +1,8 @@
 package solohelper.domain;
 
+import solohelper.command.CommandArguments;
 import solohelper.command.CommandLibrary.CommandCode;
+import solohelper.domain.MusicPlayerSettings.LoopingMode;
 
 
 /**
@@ -20,7 +22,7 @@ public interface MusicPlayer {
 
 	void pause();
 
-	void toggleLooping();
-
-	void issueCommand(CommandCode command);
+	void issueCommand(CommandCode command, CommandArguments commandArguments);
+	
+	void setLoopingMode(LoopingMode loopingMode);
 }

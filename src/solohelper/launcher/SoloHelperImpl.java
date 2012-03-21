@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
+import solohelper.command.CommandArgumentsImpl;
 import solohelper.command.CommandExecutor;
 import solohelper.command.CommandInterpreter;
 import solohelper.command.CommandLibrary.CommandCode;
@@ -41,21 +42,22 @@ public class SoloHelperImpl implements SoloHelper {
 	
 	@Override
 	public void process() throws IOException {
-		this.musicPlayer.toggleLooping();
 		this.musicPlayer.play();
 		do {
 			System.out.println("Enter command :");
 			commandInterpreter.readCommandLine();
 			CommandCode advancedCommand = commandInterpreter.getCommandCode();
-			executeCommand(advancedCommand);
+			CommandArgumentsImpl commandArguments = commandInterpreter.getCommandArguments();
+			
+			executeCommand(advancedCommand, commandArguments);
 		} while (true);
 	}
 	
-	public void executeCommand(CommandCode command) {
+	public void executeCommand(CommandCode command, CommandArgumentsImpl commandArguments) {
 		if (command == CommandCode.QUIT) {
 			System.exit(0);
 		} else {
-			this.musicPlayer.issueCommand(command);	
+			this.musicPlayer.issueCommand(command, commandArguments);	
 		}
 	}
 }

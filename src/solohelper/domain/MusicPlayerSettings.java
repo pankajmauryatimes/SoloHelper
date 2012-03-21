@@ -12,7 +12,7 @@ public interface MusicPlayerSettings {
 		OFF;
 	}
 
-	void toggleLooping();
+	void setLoopingMode(LoopingMode loopingMode);
 
 	LoopingMode getLoopingMode();
 

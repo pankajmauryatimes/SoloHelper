@@ -63,10 +63,6 @@ public class AdvancedMp3Player {
 		play(startFramePosition, endFramePosition);
 	}
 	
-	public void issueCommand(CommandCode command) {
-		
-	}
-	
 	public void pause() {
 		this.executorService.execute(new PauseTask(pauseMillis));
 	}

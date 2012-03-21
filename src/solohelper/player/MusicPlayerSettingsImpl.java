@@ -11,6 +11,7 @@ import solohelper.domain.MusicPlayerSettings;
  */
 public class MusicPlayerSettingsImpl implements MusicPlayerSettings {
 
+	private static final int minWindowSize = 400;
 	private LoopingMode loopingMode;
 	private int loopingSliceFrameCount;
 	private int startFramePosition;
@@ -21,17 +22,14 @@ public class MusicPlayerSettingsImpl implements MusicPlayerSettings {
 	}
 	
 	@Override
-	public void toggleLooping() {
-		if (this.loopingMode == LoopingMode.OFF) {
-			this.loopingMode = LoopingMode.ON;
-		} else {
-			this.loopingMode = LoopingMode.OFF;			
-		}
-	}
-	
-	@Override
 	public LoopingMode getLoopingMode() {
 		return this.loopingMode;
+	}
+	
+
+	@Override
+	public void setLoopingMode(LoopingMode loopingMode) {
+		this.loopingMode = loopingMode;
 	}
 	
 	@Override
@@ -42,8 +40,8 @@ public class MusicPlayerSettingsImpl implements MusicPlayerSettings {
 	
 	@Override
 	public int getLoopingSliceFramesCount() {
-		if (this.loopingSliceFrameCount < 100) {
-			return 100;
+		if (this.loopingSliceFrameCount < minWindowSize) {
+			return minWindowSize;
 		}
 		return this.loopingSliceFrameCount;
 	}

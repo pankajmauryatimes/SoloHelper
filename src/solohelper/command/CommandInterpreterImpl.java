@@ -39,4 +39,9 @@ public class CommandInterpreterImpl implements CommandInterpreter {
 		return this.commandLibrary.getAdvancedCommand(this.commandLine);
 	}
 	
+	@Override
+	public CommandArgumentsImpl getCommandArguments() {
+		return new CommandArgumentsImpl(getCommandCode(), this.commandLine);
+	}
+	
 }

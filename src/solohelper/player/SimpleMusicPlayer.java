@@ -1,9 +1,12 @@
 package solohelper.player;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
+import solohelper.command.CommandArguments;
 import solohelper.command.CommandLibrary.CommandCode;
 import solohelper.domain.MusicPlayer;
 import solohelper.domain.MusicPlayerSettings;
@@ -20,7 +23,6 @@ public class SimpleMusicPlayer implements MusicPlayer {
 
 	private final Factory musicFileFactory;
 	private Mp3MusicFile mp3MusicFile;
-	private final Mp3Player mp3Player;
 	private final AdvancedMp3Player advancedMp3Player;
 	private StateOfPlay stateOfPlay;
 	private final MusicPlayerSettings musicPlayerSettings;
@@ -31,7 +33,6 @@ public class SimpleMusicPlayer implements MusicPlayer {
 			AdvancedMp3Player advancedMp3Player,
 			MusicPlayerSettings musicPlayerSettings) {
 		this.musicFileFactory = musicFileFactory;
-		this.mp3Player = mp3Player;
 		this.advancedMp3Player = advancedMp3Player;
 		this.musicPlayerSettings = musicPlayerSettings;
 		stateOfPlay = StateOfPlay.INACTIVE;
@@ -46,7 +47,6 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	public void loadMusicFile(String filePath) {
 		mp3MusicFile = musicFileFactory.create(filePath);
 		System.out.println("loaded a mp3 music file " + mp3MusicFile.getFilePath());
-//		this.mp3Player.load(mp3MusicFile);
 		this.advancedMp3Player.load(mp3MusicFile);
 	}
 	
@@ -58,7 +58,6 @@ public class SimpleMusicPlayer implements MusicPlayer {
 				this.musicPlayerSettings.getStartFramePosition() +
 				this.musicPlayerSettings.getLoopingSliceFramesCount()
 				);
-//		this.mp3Player.play();
 	}
 	
 	public void loop() {
@@ -69,8 +68,6 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	@Override
 	public void pause() {
 		stateOfPlay = StateOfPlay.INACTIVE;
-//		int positionMillis = this.mp3Player.getPositionMillis();
-//		System.out.println("Current position = " + positionMillis);
 	}
 
 	@Override
@@ -79,9 +76,8 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	}
 	
 	@Override
-	public void toggleLooping() {
-		this.musicPlayerSettings.toggleLooping();
-		
+	public void setLoopingMode(LoopingMode loopingMode) {
+		this.musicPlayerSettings.setLoopingMode(loopingMode);
 		if (this.musicPlayerSettings.getLoopingMode() == LoopingMode.ON) {
 			setPlayBackListener(new LoopingListener());
 		} else {
@@ -90,12 +86,17 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	}
 
 	@Override
-	public void issueCommand(CommandCode command) {
+	public void issueCommand(CommandCode command, CommandArguments commandArguments) {
+		List<String> argumentsList = commandArguments.getArgumentsList();
+		
 		if (command == CommandCode.TOGGLE_LOOP_MODE) {
-			toggleLooping();
+			// we get the desired loop mode from argument 1
+			if (argumentsList.get(0).equalsIgnoreCase("on")) {
+				setLoopingMode(LoopingMode.ON);
+			} else if (argumentsList.get(0).equalsIgnoreCase("off")) {
+				setLoopingMode(LoopingMode.OFF);
+			} 
 		}
-
-		this.advancedMp3Player.issueCommand(command);
 	}
 	
 	private void setPlayBackListener(PlaybackListener playbackListener) {

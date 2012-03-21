@@ -17,4 +17,6 @@ public interface CommandInterpreter {
 	boolean validateCommandLine();
 
 	CommandCode getCommandCode();
+
+	CommandArgumentsImpl getCommandArguments();
 }

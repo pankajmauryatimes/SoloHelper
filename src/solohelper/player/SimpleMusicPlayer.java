@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import javazoom.jl.player.advanced.PlaybackEvent;
-import javazoom.jl.player.advanced.PlaybackListener;
 import solohelper.command.CommandArguments;
+import solohelper.command.CommandConfigurations;
+import solohelper.command.CommandConfigurations.Direction;
 import solohelper.command.CommandLibrary.CommandCode;
 import solohelper.domain.MusicPlayer;
 import solohelper.domain.MusicPlayerSettings;
@@ -48,12 +48,13 @@ public class SimpleMusicPlayer implements MusicPlayer {
 		mp3MusicFile = musicFileFactory.create(filePath);
 		System.out.println("loaded a mp3 music file " + mp3MusicFile.getFilePath());
 		this.advancedMp3Player.load(mp3MusicFile);
+		this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
 	}
 	
 	@Override
 	public void play() {
 		System.out.println("Starting play.");
-		this.advancedMp3Player.play(this.musicPlayerSettings);
+		this.advancedMp3Player.play();
 	}
 	
 	@Override
@@ -97,6 +98,35 @@ public class SimpleMusicPlayer implements MusicPlayer {
 			printInfo();
 			return;
 		}
+		
+		if (command == CommandCode.SLIDE_WINDOW) {
+			// parse direction
+			Direction direction = null;
+			if (argumentsList.get(0).equalsIgnoreCase("forward")) {
+				direction = CommandConfigurations.Direction.FORWARD;
+			} else if (argumentsList.get(0).equalsIgnoreCase("backward")) {
+				direction = CommandConfigurations.Direction.BACKWARD;
+			}
+			
+			// frame count
+			int frameCount = Integer.parseInt(argumentsList.get(1));
+			updateMusicPlayerSettings(direction, frameCount);
+			return;
+		}
+	}
+	
+	public void updateMusicPlayerSettings(Direction direction, int frameCount) {
+		int startFramePosition = this.musicPlayerSettings.getStartFramePosition();
+		
+		if (direction == Direction.FORWARD) {
+			this.musicPlayerSettings.setStartFramePosition(
+					startFramePosition + frameCount);
+		} else {
+			int safeStartFramePosition 
+			= startFramePosition > frameCount ?  startFramePosition - frameCount : 0; 
+			this.musicPlayerSettings.setStartFramePosition(safeStartFramePosition);
+		}
+		this.advancedMp3Player.applyMusicPlayerSettings(musicPlayerSettings);
 	}
 	
 	private void printInfo() {

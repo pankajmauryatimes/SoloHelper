@@ -13,6 +13,7 @@ package solohelper.command;
  * goto_window label
  * info
  * save_info
+ * set_pause millis
  * 
  * @author pankajm
  */
@@ -37,10 +38,22 @@ public interface CommandLibrary {
 		INFO("info", 0),
 		
 		/**
+		 * Slides the current window in the given direction by the
+		 * given frame count. On hitting a boundary on either slide,
+		 * the slide stops.
+		 */
+		SLIDE_WINDOW("slide_window", 2),
+		
+		/**
 		 * Change the loop mode to on or off depending on the argument.
 		 */
-		TOGGLE_LOOP_MODE("loop", 1);
+		TOGGLE_LOOP_MODE("loop", 1),
 		
+		/**
+		 * Sets the looping pause when the window end is reached before
+		 * resuming playback.
+		 */
+		SET_PAUSE("set_pause", 1);
 		
 		private final String commandWord;
 		private final int numArguments;

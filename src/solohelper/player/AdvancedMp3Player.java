@@ -25,10 +25,9 @@ public class AdvancedMp3Player {
 	private final ExecutorService executorService;
 	private MusicFile musicFile;
 	private static final long pauseMillis = 1000;
-	private int startFramePosition;
-	private int endFramePosition;
 	private StateOfPlay stateOfPlay;
 	private PlaybackListener playbackListener;
+	private MusicPlayerSettings musicPlayerSettings;
 
 	@Inject
 	public AdvancedMp3Player(ExecutorService executorService) {
@@ -54,6 +53,7 @@ public class AdvancedMp3Player {
 	}
 	
 	public void applyMusicPlayerSettings(MusicPlayerSettings musicPlayerSettings) {
+		this.musicPlayerSettings = musicPlayerSettings;
 		if (musicPlayerSettings.getLoopingMode() == LoopingMode.ON) {
 			setPlayBackListener(new LoopingListener());
 		} else {
@@ -61,33 +61,28 @@ public class AdvancedMp3Player {
 		}
 	}
 	
-	public void setPlayBackListener(PlaybackListener playbackListener) {
+	private void setPlayBackListener(PlaybackListener playbackListener) {
 		this.playbackListener = playbackListener;
 		
 		// Also update the player ?? do we check state ??
 		this.player.setPlayBackListener(playbackListener);
 	}
 	
-	public void play(MusicPlayerSettings musicPlayerSettings) {
+	public void play() {
 		applyMusicPlayerSettings(musicPlayerSettings);
-		play(musicPlayerSettings.getStartFramePosition(),
-				musicPlayerSettings.getStartFramePosition() +
-				musicPlayerSettings.getLoopingSliceFramesCount());
+		this.executorService.execute(
+			new PlayMp3Task(musicPlayerSettings.getStartFramePosition(),
+			musicPlayerSettings.getStartFramePosition() +
+			musicPlayerSettings.getLoopingSliceFramesCount()));
 	}
 
-	private void play(int startFramePosition, int endFramePosition) {
-		this.startFramePosition = startFramePosition;
-		this.endFramePosition = endFramePosition;
-		this.executorService.execute(
-			new PlayMp3Task(startFramePosition, endFramePosition));
-	}
-	
+
 	public void loop() {
 		close();
 		load(this.musicFile);
 		this.setPlayBackListener(playbackListener);
 		pause();
-		play(startFramePosition, endFramePosition);
+		play();
 	}
 	
 	public void pause() {
@@ -112,10 +107,6 @@ public class AdvancedMp3Player {
 	
 	private class NonLoopingListener extends PlaybackListener {
 	}
-    
-    
-    
-    
     
     public class PauseTask implements Runnable {
 

@@ -7,7 +7,7 @@ package solohelper.command;
  */
 public class CommandConfigurations {
 
-	enum Direction {
+	public enum Direction {
 		FORWARD,
 		BACKWARD;
 	}

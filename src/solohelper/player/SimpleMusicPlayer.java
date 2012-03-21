@@ -25,7 +25,6 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	private final Factory musicFileFactory;
 	private Mp3MusicFile mp3MusicFile;
 	private final AdvancedMp3Player advancedMp3Player;
-//	private final MusicPlayerSettings musicPlayerSettings;
 	private String filePath;
 	private final MusicPlayerSettingsManager musicPlayerSettingsManager;
 
@@ -37,7 +36,6 @@ public class SimpleMusicPlayer implements MusicPlayer {
 			MusicPlayerSettingsManagerImpl.Factory musicPlayerSettingsManagerFactory) {
 		this.musicFileFactory = musicFileFactory;
 		this.advancedMp3Player = advancedMp3Player;
-//		this.musicPlayerSettings = musicPlayerSettings;
 		this.musicPlayerSettingsManager = musicPlayerSettingsManagerFactory.create(musicPlayerSettings);
 	}
 	

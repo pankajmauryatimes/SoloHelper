@@ -2,18 +2,22 @@ package solohelper.domain;
 
 import solohelper.command.CommandConfigurations.Direction;
 
+/**
+ * Manages a music player settings.
+ * 
+ * @author pankajm
+ */
 public interface MusicPlayerSettingsManager {
 
-	void updateMusicPlayerSettingsForSlideWindow(Direction direction,
-			int frameCount);
-
-	void updateMusicPlayerSettingsForAlterWindow(Direction direction,
-			int frameCount);
-
-	void updateMusicPlayerSettingsForPause(int pauseMillis);
-
 	MusicPlayerSettings getMusicPlayerSettings();
+	
+	void updateSettingsForSlideWindow(Direction direction, int frameCount);
 
-	void updateMusicPlayerSettingsLoopingMode(LoopingMode loopingMode);
+	void updateSettingsForAlterWindow(Direction direction, int frameCount);
 
+	void updateSettingsForPause(int pauseMillis);
+
+	void updateSettingsLoopingCount(int loopCount);
+
+	void updateSettingsForSetWindow(int startFramePosition, int frameCount);
 }

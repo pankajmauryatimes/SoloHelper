@@ -1,8 +1,6 @@
 package solohelper.launcher;
 
-import solohelper.domain.LoopingMode;
 import solohelper.domain.MusicPlayerSettings;
-
 
 /**
  * Represents a clip from a music file.
@@ -13,8 +11,6 @@ import solohelper.domain.MusicPlayerSettings;
  * @author pankajm
  */
 public interface MusicClip {
-
-	LoopingMode getLoopingMode();
 
 	int getLoopingSliceFramesCount();
 
@@ -27,4 +23,6 @@ public interface MusicClip {
 	MusicPlayerSettings getMusicPlayerSettings();
 
 	String getCsvString();
+	
+	int getLoopCount();
 }

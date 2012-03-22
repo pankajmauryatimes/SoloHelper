@@ -2,7 +2,6 @@ package solohelper.player;
 
 import javax.inject.Inject;
 
-import solohelper.domain.LoopingMode;
 import solohelper.domain.MusicPlayerSettings;
 
 /**
@@ -13,27 +12,28 @@ import solohelper.domain.MusicPlayerSettings;
 public class MusicPlayerSettingsImpl implements MusicPlayerSettings {
 
 	private static final int minWindowSize = 10;
-	private LoopingMode loopingMode;
 	private int loopingSliceFrameCount;
 	private int startFramePosition;
 	private int pauseMillis;
+	private int loopCount;
 	
 	@Inject
 	public MusicPlayerSettingsImpl() {
-		loopingMode = LoopingMode.OFF;
+		this.loopCount = 1;
+		startFramePosition = 0;
+		loopingSliceFrameCount = minWindowSize;
 	}
 	
 	@Override
-	public LoopingMode getLoopingMode() {
-		return this.loopingMode;
+	public void setLoopCount(int loopCount) {
+		this.loopCount = loopCount;
 	}
-	
 
 	@Override
-	public void setLoopingMode(LoopingMode loopingMode) {
-		this.loopingMode = loopingMode;
+	public int getLoopCount() {
+		return this.loopCount;
 	}
-	
+
 	@Override
 	public void setLoopingSliceFramesCount(
 			int loopingSliceFrameCount) {
@@ -60,8 +60,8 @@ public class MusicPlayerSettingsImpl implements MusicPlayerSettings {
 	
 	@Override
 	public String toString() {
-		return String.format("Looping Mode %s, Window start %s, Window size %s, pause %s", 
-			this.loopingMode, startFramePosition, getLoopingSliceFramesCount(), pauseMillis);
+		return String.format("Looping count %s, Window start %s, Window size %s, pause %s", 
+			this.loopCount, startFramePosition, getLoopingSliceFramesCount(), pauseMillis);
 	}
 
 	@Override

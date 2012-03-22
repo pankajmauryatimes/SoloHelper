@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
-import solohelper.domain.LoopingMode;
 import solohelper.domain.MusicFile;
 import solohelper.domain.MusicPlayerSettings;
 import solohelper.domain.StateOfPlay;
@@ -53,11 +52,8 @@ public class AdvancedMp3Player {
 	
 	public void applyMusicPlayerSettings(MusicPlayerSettings musicPlayerSettings) {
 		this.musicPlayerSettings = musicPlayerSettings;
-		if (musicPlayerSettings.getLoopingMode() == LoopingMode.ON) {
-			setPlayBackListener(new LoopingListener());
-		} else {
-			setPlayBackListener(new NonLoopingListener());
-		}
+		int loopCount = musicPlayerSettings.getLoopCount();
+		setPlayBackListener(new LoopingForCountTimesListener(loopCount));
 	}
 	
 	private void setPlayBackListener(PlaybackListener playbackListener) {
@@ -68,7 +64,6 @@ public class AdvancedMp3Player {
 	}
 	
 	public void play() {
-		applyMusicPlayerSettings(musicPlayerSettings);
 		this.executorService.execute(
 			new PlayMp3Task(musicPlayerSettings.getStartFramePosition(),
 			musicPlayerSettings.getStartFramePosition() +
@@ -90,22 +85,29 @@ public class AdvancedMp3Player {
 	}
 	
     public void close() { if (player != null) player.close(); }
-    
-	private class LoopingListener extends PlaybackListener {
-		@Override
-		public void playbackFinished(PlaybackEvent playbackEvent) {
-			super.playbackFinished(playbackEvent);
-			loop();
+	
+	private class LoopingForCountTimesListener extends PlaybackListener {
+		private final int loopCount;
+		private int loopedCount = 0;
+
+		public LoopingForCountTimesListener(int loopCount) {
+			this.loopCount = loopCount;
 		}
 		
 		@Override
-		public void playbackStarted(PlaybackEvent playbackEvent) {
-			super.playbackStarted(playbackEvent);
-			// nothing to do for now.
+		public void playbackFinished(PlaybackEvent playbackEvent) {
+			super.playbackFinished(playbackEvent);
+			System.out.println("playback finished");
+			
+			loopedCount++;
+			System.out.println("looped count = " + loopedCount);
+			
+			System.out.println("loop count set = " + loopCount);
+			
+			if (loopedCount < loopCount) {
+				loop();	
+			}
 		}
-	}
-	
-	private class NonLoopingListener extends PlaybackListener {
 	}
     
     public class PauseTask implements Runnable {

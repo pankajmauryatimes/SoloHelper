@@ -1,14 +1,6 @@
 package solohelper.launcher;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -19,6 +11,8 @@ import solohelper.command.CommandExecutor;
 import solohelper.command.CommandInterpreter;
 import solohelper.command.CommandLibrary.CommandCode;
 import solohelper.domain.MusicPlayer;
+import solohelper.io.MusicClipsReader;
+import solohelper.io.MusicClipsWriter;
 
 public class SoloHelperImpl implements SoloHelper {
 
@@ -26,18 +20,23 @@ public class SoloHelperImpl implements SoloHelper {
 	private final MusicPlayer musicPlayer;
 	private final CommandInterpreter commandInterpreter;
 	private final CommandExecutor commandExecutor;
-	private final Map<String, MusicClip> clipMap 
-		= new TreeMap<String, MusicClip>();
+	private final Map<String, MusicClip> clipMap = new TreeMap<String, MusicClip>();
 	private String filePath;
 	private String configFileName;
+	private final MusicClipsReader musicClipsReader;
+	private final MusicClipsWriter musicClipsWriter;
 
 	@Inject
 	public SoloHelperImpl(MusicPlayer musicPlayer,
-			CommandInterpreter commandInterpreter,
-			CommandExecutor commandExecutor) {
+		CommandInterpreter commandInterpreter,
+		CommandExecutor commandExecutor,
+		MusicClipsReader musicClipsReader,
+		MusicClipsWriter musicClipsWriter) {
 		this.musicPlayer = musicPlayer;
 		this.commandInterpreter = commandInterpreter;
 		this.commandExecutor = commandExecutor;
+		this.musicClipsReader = musicClipsReader;
+		this.musicClipsWriter = musicClipsWriter;
 	}
 	
 	@Override
@@ -50,6 +49,7 @@ public class SoloHelperImpl implements SoloHelper {
 		this.filePath = filePath;
 		this.musicPlayer.loadMusicFile(filePath);
 		configFileName = this.filePath + CLIP_FILE_SUFFIX;
+		readClips(configFileName);
 	}
 	
 	@Override
@@ -82,7 +82,7 @@ public class SoloHelperImpl implements SoloHelper {
 			this.musicPlayer.setMusicPlayerSettings(musicClip.getMusicPlayerSettings());
 			return;
 		} else if (command == CommandCode.SAVE_INFO) {
-			writeClips(configFileName);
+			this.musicClipsWriter.writeClips(configFileName, clipMap);
 		} else if (command == CommandCode.LOAD_INFO) {
 			readClips(configFileName);
 		} else if (command == CommandCode.SHOW_CLIPS) { 
@@ -95,40 +95,7 @@ public class SoloHelperImpl implements SoloHelper {
 	}
 	
 	public void readClips(String configFileName) {
-		try {
-			clipMap.clear();
-			FileInputStream fis = new FileInputStream(configFileName);
-			BufferedInputStream bis = new BufferedInputStream(fis);
-			InputStreamReader isr = new InputStreamReader(bis);
-			BufferedReader br = new BufferedReader(isr);
-			
-			do {
-				String line = br.readLine();
-				if (line == null) {
-					return;
-				}
-				MusicClipImpl clip = new MusicClipImpl(line);
-				clipMap.put(clip.getLabel(), clip);
-			} while (true);
-		} catch (IOException e) {
-			System.out.println("Failed to read file " + configFileName);
-		}
-	}
-	
-	public void writeClips(String configFileName) {
-		try {
-			FileOutputStream fos = new FileOutputStream(configFileName, true /*append*/);
-	        BufferedOutputStream bos = new BufferedOutputStream(fos);
-	        OutputStreamWriter osw = new OutputStreamWriter(bos);
-	        BufferedWriter writer = new BufferedWriter(osw);
-	        for (MusicClip clip : clipMap.values()) {
-	        	writer.write(clip.getCsvString());
-	        }
-	        writer.flush();
-	        writer.close();	
-		} catch (IOException e) {
-			System.out.println("Failed to write file " + configFileName);
-		}
-		
+		clipMap.clear();
+		clipMap.putAll(this.musicClipsReader.readClips(configFileName));
 	}
 }

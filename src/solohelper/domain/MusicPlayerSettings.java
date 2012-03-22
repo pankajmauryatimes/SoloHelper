@@ -1,17 +1,12 @@
 
 package solohelper.domain;
 
-
 /**
  * Represents the global settings of the {@link MusicPlayer}.
  * 
  * @author pankajm
  */
 public interface MusicPlayerSettings {
-
-	void setLoopingMode(LoopingMode loopingMode);
-
-	LoopingMode getLoopingMode();
 
 	void setLoopingSliceFramesCount(int loopingSliceFrameCount);
 
@@ -24,4 +19,8 @@ public interface MusicPlayerSettings {
 	int getPauseMillis();
 	
 	void setPauseMillis(int pauseMillis);
+
+	int getLoopCount();
+
+	void setLoopCount(int loopCount);
 }

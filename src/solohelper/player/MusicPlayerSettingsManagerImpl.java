@@ -3,7 +3,6 @@ package solohelper.player;
 import javax.inject.Inject;
 
 import solohelper.command.CommandConfigurations.Direction;
-import solohelper.domain.LoopingMode;
 import solohelper.domain.MusicPlayerSettings;
 import solohelper.domain.MusicPlayerSettingsManager;
 
@@ -23,7 +22,7 @@ public class MusicPlayerSettingsManagerImpl implements MusicPlayerSettingsManage
 	}
 	
 	@Override
-	public void updateMusicPlayerSettingsForSlideWindow(Direction direction, int frameCount) {
+	public void updateSettingsForSlideWindow(Direction direction, int frameCount) {
 		int startFramePosition = this.getMusicPlayerSettings().getStartFramePosition();
 		
 		if (direction == Direction.FORWARD) {
@@ -37,7 +36,7 @@ public class MusicPlayerSettingsManagerImpl implements MusicPlayerSettingsManage
 	}
 	
 	@Override
-	public void updateMusicPlayerSettingsForAlterWindow(Direction direction, int frameCount) {
+	public void updateSettingsForAlterWindow(Direction direction, int frameCount) {
 		int startFramePosition = this.getMusicPlayerSettings().getStartFramePosition();
 		int loopingSliceFramesCount = this.getMusicPlayerSettings().getLoopingSliceFramesCount();
 		
@@ -51,15 +50,22 @@ public class MusicPlayerSettingsManagerImpl implements MusicPlayerSettingsManage
 
 		} 
 	}
+	
+	@Override
+	public void updateSettingsForSetWindow(int startFramePosition,
+			int frameCount) {
+		this.getMusicPlayerSettings().setStartFramePosition(startFramePosition);
+		this.getMusicPlayerSettings().setLoopingSliceFramesCount(frameCount);
+	}
 
 	@Override
-	public void updateMusicPlayerSettingsForPause(int pauseMillis) {
+	public void updateSettingsForPause(int pauseMillis) {
 		this.getMusicPlayerSettings().setPauseMillis(pauseMillis);
 	}
 	
 	@Override
-	public void updateMusicPlayerSettingsLoopingMode(LoopingMode loopingMode) {
-		this.getMusicPlayerSettings().setLoopingMode(loopingMode);
+	public void updateSettingsLoopingCount(int loopCount) {
+		this.getMusicPlayerSettings().setLoopCount(loopCount);
 	}
 
 	@Override

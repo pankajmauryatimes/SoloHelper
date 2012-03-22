@@ -8,7 +8,6 @@ import solohelper.command.CommandArguments;
 import solohelper.command.CommandConfigurations;
 import solohelper.command.CommandConfigurations.Direction;
 import solohelper.command.CommandLibrary.CommandCode;
-import solohelper.domain.LoopingMode;
 import solohelper.domain.MusicPlayer;
 import solohelper.domain.MusicPlayerSettings;
 import solohelper.domain.MusicPlayerSettingsManager;
@@ -73,8 +72,8 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	}
 	
 	@Override
-	public void setLoopingMode(LoopingMode loopingMode) {
-		this.musicPlayerSettingsManager.updateMusicPlayerSettingsLoopingMode(loopingMode);
+	public void setLoopCount(int loopCount) {
+		this.musicPlayerSettingsManager.updateSettingsLoopingCount(loopCount);
 		this.advancedMp3Player.applyMusicPlayerSettings(
 				musicPlayerSettingsManager.getMusicPlayerSettings());
 	}
@@ -83,13 +82,19 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	public void issueCommand(CommandCode command, CommandArguments commandArguments) {
 		List<String> argumentsList = commandArguments.getArgumentsList();
 		
-		if (command == CommandCode.TOGGLE_LOOP_MODE) {
-			// we get the desired loop mode from argument 1
-			if (argumentsList.get(0).equalsIgnoreCase("on")) {
-				setLoopingMode(LoopingMode.ON);
-			} else if (argumentsList.get(0).equalsIgnoreCase("off")) {
-				setLoopingMode(LoopingMode.OFF);
-			}
+//		if (command == CommandCode.TOGGLE_LOOP_MODE) {
+//			// we get the desired loop mode from argument 1
+//			if (argumentsList.get(0).equalsIgnoreCase("on")) {
+//				setLoopingMode(LoopingMode.INFINITE);
+//			} else if (argumentsList.get(0).equalsIgnoreCase("off")) {
+//				setLoopingMode(LoopingMode.OFF);
+//			}
+//			return;
+//		}
+		
+		if (command == CommandCode.LOOP) {
+			Integer loopCount = Integer.parseInt(argumentsList.get(0));
+			setLoopCount(loopCount);
 			return;
 		}
 		
@@ -113,7 +118,7 @@ public class SimpleMusicPlayer implements MusicPlayer {
 		if (command == CommandCode.SLIDE_WINDOW) {
 			Direction direction = getDirection(argumentsList.get(0));
 			int frameCount = Integer.parseInt(argumentsList.get(1));
-			this.musicPlayerSettingsManager.updateMusicPlayerSettingsForSlideWindow(direction, frameCount);
+			this.musicPlayerSettingsManager.updateSettingsForSlideWindow(direction, frameCount);
 			this.advancedMp3Player.applyMusicPlayerSettings(
 					musicPlayerSettingsManager.getMusicPlayerSettings());
 			return;
@@ -121,7 +126,7 @@ public class SimpleMusicPlayer implements MusicPlayer {
 		
 		if (command == CommandCode.SET_PAUSE) {
 			int pauseMillis = Integer.parseInt(argumentsList.get(0));
-			this.musicPlayerSettingsManager.updateMusicPlayerSettingsForPause(pauseMillis);
+			this.musicPlayerSettingsManager.updateSettingsForPause(pauseMillis);
 			this.advancedMp3Player.applyMusicPlayerSettings(
 					musicPlayerSettingsManager.getMusicPlayerSettings());
 			return;
@@ -130,10 +135,21 @@ public class SimpleMusicPlayer implements MusicPlayer {
 		if (command == CommandCode.ALTER_WINDOW) {
 			Direction direction = getDirection(argumentsList.get(0));
 			int frameCount = Integer.parseInt(argumentsList.get(1));
-			this.musicPlayerSettingsManager.updateMusicPlayerSettingsForAlterWindow(direction, frameCount);
+			this.musicPlayerSettingsManager.updateSettingsForAlterWindow(direction, frameCount);
 			this.advancedMp3Player.applyMusicPlayerSettings(
 					musicPlayerSettingsManager.getMusicPlayerSettings());
 			return;
+		}
+		
+		if (command == CommandCode.SET_WINDOW) {
+			int start = Integer.parseInt(argumentsList.get(0));
+			int frameCount = Integer.parseInt(argumentsList.get(1));
+			this.musicPlayerSettingsManager.updateSettingsForSetWindow(
+					start, frameCount);
+			this.advancedMp3Player.applyMusicPlayerSettings(
+					musicPlayerSettingsManager.getMusicPlayerSettings());
+			return;
+
 		}
 	}
 	

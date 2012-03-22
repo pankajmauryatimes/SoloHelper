@@ -45,9 +45,9 @@ public interface CommandLibrary {
 		SLIDE_WINDOW("slide_window", 2),
 		
 		/**
-		 * Change the loop mode to on or off depending on the argument.
+		 * Loop the current window n times.
 		 */
-		TOGGLE_LOOP_MODE("loop", 1),
+		LOOP("loop", 1),
 		
 		/**
 		 * Sets the looping pause when the window end is reached before
@@ -60,6 +60,13 @@ public interface CommandLibrary {
 		 * given frame count. Cannot alter in back before 0 count.
 		 */
 		ALTER_WINDOW("alter_window", 2),
+		
+		/**
+		 * Sets the current window to the given parameters.
+		 * First param = start position.
+		 * Second param = size of window. 
+		 */
+		SET_WINDOW("set_window", 2),
 		
 		/**
 		 * Saves the current music player settings with the given label.

@@ -34,5 +34,12 @@ public class CommandArgumentsImpl implements CommandArguments {
 		}
 		return argumentStrings;
 	}
+	
+	@Override
+	public String getArgumentsString() {
+		StringTokenizer tokenizer = new StringTokenizer(commandLine);
+		tokenizer.nextToken();
+		return commandLine.substring(tokenizer.nextToken().length() - 1);
+	}
 
 }

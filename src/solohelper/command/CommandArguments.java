@@ -11,4 +11,6 @@ public interface CommandArguments {
 
 	List<String> getArgumentsList();
 
+	String getArgumentsString();
+
 }

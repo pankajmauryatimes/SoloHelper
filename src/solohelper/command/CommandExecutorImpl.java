@@ -69,6 +69,16 @@ public class CommandExecutorImpl implements CommandExecutor {
 					e.printStackTrace();
 				}
 			}
+		} else if (command == CommandCode.SLEEP) {
+			try {
+				Thread.sleep(Integer.parseInt(commandArguments.getArgumentsList().get(0)));
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		} else if (command == CommandCode.PRINT) {
+			System.out.println(commandArguments.getArgumentsString());
 		} else {
 			this.musicPlayer.issueCommand(command, commandArguments);	
 		}

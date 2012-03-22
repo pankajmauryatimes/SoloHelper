@@ -105,7 +105,21 @@ public interface CommandLibrary {
 		 * A useful command which blocks the command executor until the state of play
 		 * is the state in the first argument.
 		 */
-		WAIT_TILL_STATE_OF_PLAY("till_sop", 1);
+		WAIT_TILL_STATE_OF_PLAY("till_sop", 1),
+		
+		/**
+		 * Will cause the command executor to sleep for argument millis of secs.
+		 * Useful in session mode.
+		 */
+		SLEEP("sleep", 1),
+		
+		/**
+		 * A command to print a single word on the output console for debugging.
+		 * Useful in session mode.
+		 * The argument count is not used for print command as we may have any number
+		 * of words to print. getArgumentsList is not used for print execution.
+		 */
+		PRINT("print", 0);
 		
 		private final String commandWord;
 		private final int numArguments;

@@ -1,18 +1,15 @@
 package solohelper.launcher;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.inject.Inject;
 
+import solohelper.clip.MusicClipsManager;
 import solohelper.command.CommandArgumentsImpl;
 import solohelper.command.CommandExecutor;
 import solohelper.command.CommandInterpreter;
 import solohelper.command.CommandLibrary.CommandCode;
 import solohelper.domain.MusicPlayer;
-import solohelper.io.MusicClipsReader;
-import solohelper.io.MusicClipsWriter;
 
 public class SoloHelperImpl implements SoloHelper {
 
@@ -20,23 +17,19 @@ public class SoloHelperImpl implements SoloHelper {
 	private final MusicPlayer musicPlayer;
 	private final CommandInterpreter commandInterpreter;
 	private final CommandExecutor commandExecutor;
-	private final Map<String, MusicClip> clipMap = new TreeMap<String, MusicClip>();
 	private String filePath;
 	private String configFileName;
-	private final MusicClipsReader musicClipsReader;
-	private final MusicClipsWriter musicClipsWriter;
+	private final MusicClipsManager musicClipsManager;
 
 	@Inject
 	public SoloHelperImpl(MusicPlayer musicPlayer,
 		CommandInterpreter commandInterpreter,
 		CommandExecutor commandExecutor,
-		MusicClipsReader musicClipsReader,
-		MusicClipsWriter musicClipsWriter) {
+		MusicClipsManager musicClipsManager) {
 		this.musicPlayer = musicPlayer;
 		this.commandInterpreter = commandInterpreter;
 		this.commandExecutor = commandExecutor;
-		this.musicClipsReader = musicClipsReader;
-		this.musicClipsWriter = musicClipsWriter;
+		this.musicClipsManager = musicClipsManager;
 	}
 	
 	@Override
@@ -49,7 +42,7 @@ public class SoloHelperImpl implements SoloHelper {
 		this.filePath = filePath;
 		this.musicPlayer.loadMusicFile(filePath);
 		configFileName = this.filePath + CLIP_FILE_SUFFIX;
-		readClips(configFileName);
+		this.musicClipsManager.readClips(configFileName);
 	}
 	
 	@Override
@@ -73,32 +66,23 @@ public class SoloHelperImpl implements SoloHelper {
 			System.exit(0);
 		} else if (command == CommandCode.SAVE_CLIP) {
 			String clipLabel = commandArguments.getArgumentsList().get(0);
-			clipMap.put(clipLabel, 
-				new MusicClipImpl(clipLabel, this.musicPlayer.getMusicPlayerSettings()));
+			this.musicClipsManager.saveClip(clipLabel);
 			return;
 		} else if (command == CommandCode.DELETE_CLIP) {
 			String clipLabel = commandArguments.getArgumentsList().get(0);
-			clipMap.remove(clipLabel);
+			this.musicClipsManager.deleteClip(clipLabel);
 		} else if (command == CommandCode.LOAD_CLIP) {
 			String clipLabel = commandArguments.getArgumentsList().get(0);
-			MusicClip musicClip = clipMap.get(clipLabel);
-			this.musicPlayer.setMusicPlayerSettings(musicClip.getMusicPlayerSettings());
+			this.musicClipsManager.loadClip(clipLabel);
 			return;
 		} else if (command == CommandCode.SAVE_INFO) {
-			this.musicClipsWriter.writeClips(configFileName, clipMap);
+			this.musicClipsManager.writeClips(configFileName);
 		} else if (command == CommandCode.LOAD_INFO) {
-			readClips(configFileName);
-		} else if (command == CommandCode.SHOW_CLIPS) { 
-			for (MusicClip clip : clipMap.values()) {
-	        	System.out.println(clip.toString());
-	        }
+			this.musicClipsManager.readClips(configFileName);
+		} else if (command == CommandCode.SHOW_CLIPS) {
+			this.musicClipsManager.showClips();
 		} else {
 			this.musicPlayer.issueCommand(command, commandArguments);	
 		}
-	}
-	
-	public void readClips(String configFileName) {
-		clipMap.clear();
-		clipMap.putAll(this.musicClipsReader.readClips(configFileName));
 	}
 }

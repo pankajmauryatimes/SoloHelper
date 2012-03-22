@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Map;
 
-import solohelper.launcher.MusicClip;
+import solohelper.clip.MusicClip;
 
 public class MusicClipsWriterImpl implements MusicClipsWriter {
 	

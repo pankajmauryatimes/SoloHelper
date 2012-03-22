@@ -1,5 +1,6 @@
 package solohelper.launcher;
 
+import solohelper.clip.ClipModule;
 import solohelper.command.CommandModule;
 import solohelper.domain.DomainModule;
 import solohelper.io.IOModule;
@@ -21,6 +22,7 @@ public class SoloHelperModule extends AbstractModule {
 		install(new CommandModule());
 		install(new DomainModule());
 		install(new IOModule());
+		install(new ClipModule());
 	}
 
 }

@@ -1,4 +1,4 @@
-package solohelper.launcher;
+package solohelper.clip;
 
 import java.util.StringTokenizer;
 
@@ -17,7 +17,6 @@ public class MusicClipImpl implements MusicClip {
 	private final int pauseMillis;
 	private final String label;
 	private final int loopCount;
-
 	
 	public MusicClipImpl(String clipLabel, MusicPlayerSettings musicPlayerSettings) {
 		this.label = clipLabel;

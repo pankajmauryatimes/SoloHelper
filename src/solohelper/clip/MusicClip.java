@@ -1,4 +1,4 @@
-package solohelper.launcher;
+package solohelper.clip;
 
 import solohelper.domain.MusicPlayerSettings;
 

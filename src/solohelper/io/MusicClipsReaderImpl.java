@@ -8,8 +8,8 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.TreeMap;
 
-import solohelper.launcher.MusicClip;
-import solohelper.launcher.MusicClipImpl;
+import solohelper.clip.MusicClip;
+import solohelper.clip.MusicClipImpl;
 
 public class MusicClipsReaderImpl implements MusicClipsReader {
 

@@ -9,6 +9,7 @@ import solohelper.domain.MusicPlayerSettings;
 import solohelper.domain.MusicPlayerSettingsManager;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 /**
@@ -20,7 +21,9 @@ public class PlayerModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(MusicPlayer.class).to(SimpleMusicPlayer.class);
+		bind(MusicPlayer.class).to(SimpleMusicPlayer.class)
+			.in(Scopes.SINGLETON);
+		
 		bind(MusicPlayerSettings.class).to(MusicPlayerSettingsImpl.class);
 		
 		install(new FactoryModuleBuilder()

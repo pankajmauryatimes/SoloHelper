@@ -2,7 +2,7 @@ package solohelper.io;
 
 import java.util.Map;
 
-import solohelper.launcher.MusicClip;
+import solohelper.clip.MusicClip;
 
 public interface MusicClipsReader {
 

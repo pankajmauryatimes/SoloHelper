@@ -99,7 +99,13 @@ public interface CommandLibrary {
 		/**
 		 * Shows all clips currently saved in current project.
 		 */
-		SHOW_CLIPS("show_clips", 0);
+		SHOW_CLIPS("show_clips", 0),
+		
+		/**
+		 * A useful command which blocks the command executor until the state of play
+		 * is the state in the first argument.
+		 */
+		WAIT_TILL_STATE_OF_PLAY("till_sop", 1);
 		
 		private final String commandWord;
 		private final int numArguments;

@@ -23,7 +23,7 @@ public class SimpleMusicPlayer implements MusicPlayer {
 
 	private final Factory musicFileFactory;
 	private Mp3MusicFile mp3MusicFile;
-	private final AdvancedMp3Player advancedMp3Player;
+	private final Mp3Player mp3Player;
 	private String filePath;
 	private MusicPlayerSettingsManager musicPlayerSettingsManager;
 	private final solohelper.player.MusicPlayerSettingsManagerImpl.Factory musicPlayerSettingsManagerFactory;
@@ -31,11 +31,10 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	@Inject
 	public SimpleMusicPlayer(Mp3MusicFile.Factory musicFileFactory,
 			Mp3Player mp3Player,
-			AdvancedMp3Player advancedMp3Player,
 			MusicPlayerSettings musicPlayerSettings,
 			MusicPlayerSettingsManagerImpl.Factory musicPlayerSettingsManagerFactory) {
 		this.musicFileFactory = musicFileFactory;
-		this.advancedMp3Player = advancedMp3Player;
+		this.mp3Player = mp3Player;
 		this.musicPlayerSettingsManagerFactory = musicPlayerSettingsManagerFactory;
 		this.musicPlayerSettingsManager = musicPlayerSettingsManagerFactory.create(musicPlayerSettings);
 	}
@@ -55,42 +54,32 @@ public class SimpleMusicPlayer implements MusicPlayer {
 		this.filePath = filePath;
 		mp3MusicFile = musicFileFactory.create(filePath);
 		System.out.println("loaded a mp3 music file " + mp3MusicFile.getFilePath());
-		this.advancedMp3Player.load(mp3MusicFile);
-		this.advancedMp3Player.applyMusicPlayerSettings(
+		this.mp3Player.load(mp3MusicFile);
+		this.mp3Player.applyMusicPlayerSettings(
 				musicPlayerSettingsManager.getMusicPlayerSettings());
 	}
 	
 	@Override
 	public void play() {
 		System.out.println("Starting play.");
-		this.advancedMp3Player.play();
+		this.mp3Player.play();
 	}
 	
 	@Override
 	public StateOfPlay getStateOfPlay() {
-		return this.advancedMp3Player.getStateOfPlay();
+		return this.mp3Player.getStateOfPlay();
 	}
 	
 	@Override
 	public void setLoopCount(int loopCount) {
 		this.musicPlayerSettingsManager.updateSettingsLoopingCount(loopCount);
-		this.advancedMp3Player.applyMusicPlayerSettings(
+		this.mp3Player.applyMusicPlayerSettings(
 				musicPlayerSettingsManager.getMusicPlayerSettings());
 	}
 
 	@Override
 	public void issueCommand(CommandCode command, CommandArguments commandArguments) {
 		List<String> argumentsList = commandArguments.getArgumentsList();
-		
-//		if (command == CommandCode.TOGGLE_LOOP_MODE) {
-//			// we get the desired loop mode from argument 1
-//			if (argumentsList.get(0).equalsIgnoreCase("on")) {
-//				setLoopingMode(LoopingMode.INFINITE);
-//			} else if (argumentsList.get(0).equalsIgnoreCase("off")) {
-//				setLoopingMode(LoopingMode.OFF);
-//			}
-//			return;
-//		}
 		
 		if (command == CommandCode.LOOP) {
 			Integer loopCount = Integer.parseInt(argumentsList.get(0));
@@ -119,7 +108,7 @@ public class SimpleMusicPlayer implements MusicPlayer {
 			Direction direction = getDirection(argumentsList.get(0));
 			int frameCount = Integer.parseInt(argumentsList.get(1));
 			this.musicPlayerSettingsManager.updateSettingsForSlideWindow(direction, frameCount);
-			this.advancedMp3Player.applyMusicPlayerSettings(
+			this.mp3Player.applyMusicPlayerSettings(
 					musicPlayerSettingsManager.getMusicPlayerSettings());
 			return;
 		}
@@ -127,7 +116,7 @@ public class SimpleMusicPlayer implements MusicPlayer {
 		if (command == CommandCode.SET_PAUSE) {
 			int pauseMillis = Integer.parseInt(argumentsList.get(0));
 			this.musicPlayerSettingsManager.updateSettingsForPause(pauseMillis);
-			this.advancedMp3Player.applyMusicPlayerSettings(
+			this.mp3Player.applyMusicPlayerSettings(
 					musicPlayerSettingsManager.getMusicPlayerSettings());
 			return;
 		}
@@ -136,7 +125,7 @@ public class SimpleMusicPlayer implements MusicPlayer {
 			Direction direction = getDirection(argumentsList.get(0));
 			int frameCount = Integer.parseInt(argumentsList.get(1));
 			this.musicPlayerSettingsManager.updateSettingsForAlterWindow(direction, frameCount);
-			this.advancedMp3Player.applyMusicPlayerSettings(
+			this.mp3Player.applyMusicPlayerSettings(
 					musicPlayerSettingsManager.getMusicPlayerSettings());
 			return;
 		}
@@ -146,10 +135,9 @@ public class SimpleMusicPlayer implements MusicPlayer {
 			int frameCount = Integer.parseInt(argumentsList.get(1));
 			this.musicPlayerSettingsManager.updateSettingsForSetWindow(
 					start, frameCount);
-			this.advancedMp3Player.applyMusicPlayerSettings(
+			this.mp3Player.applyMusicPlayerSettings(
 					musicPlayerSettingsManager.getMusicPlayerSettings());
 			return;
-
 		}
 	}
 	

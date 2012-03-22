@@ -1,6 +1,7 @@
 package solohelper.launcher;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -11,6 +12,7 @@ import solohelper.command.CommandExecutorImpl.Factory;
 import solohelper.command.CommandInterpreter;
 import solohelper.command.CommandLibrary.CommandCode;
 import solohelper.domain.MusicPlayer;
+import solohelper.io.FileReader;
 
 public class SoloHelperImpl implements SoloHelper {
 
@@ -19,19 +21,29 @@ public class SoloHelperImpl implements SoloHelper {
 	private final CommandInterpreter commandInterpreter;
 	private final Factory commandExecutorFactory;
 	private CommandExecutor commandExecutor;
+	private final FileReader fileReader;
 
 	@Inject
 	public SoloHelperImpl(
 		MusicPlayer musicPlayer,
 		CommandInterpreter commandInterpreter,
-		CommandExecutorImpl.Factory commandExecutorFactory) {
+		CommandExecutorImpl.Factory commandExecutorFactory,
+		FileReader fileReader) {
 		this.musicPlayer = musicPlayer;
 		this.commandInterpreter = commandInterpreter;
 		this.commandExecutorFactory = commandExecutorFactory;
+		this.fileReader = fileReader;
 	}
 	
-	public void openSessionFile(String filePath) {
-		
+	@Override
+	public void executeSession(String filePath) {
+		List<String> sessionContents = fileReader.readLines(filePath);
+		for (String command : sessionContents) {
+			commandInterpreter.loadCommandFromSession(command);
+			CommandCode advancedCommand = commandInterpreter.getCommandCode();
+			CommandArgumentsImpl commandArguments = commandInterpreter.getCommandArguments();
+			this.commandExecutor.executeCommand(advancedCommand, commandArguments);
+		}
 	}
 	
 	@Override

@@ -19,4 +19,6 @@ public interface CommandInterpreter {
 	CommandCode getCommandCode();
 
 	CommandArgumentsImpl getCommandArguments();
+
+	void loadCommandFromSession(String commandLine);
 }

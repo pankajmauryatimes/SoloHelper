@@ -16,18 +16,23 @@ public class SoloHelperMain {
 		Injector injector = Guice.createInjector(new SoloHelperModule());
 		SoloHelper soloHelper = injector.getInstance(SoloHelper.class);
 		
-		if (args.length != 2) {
-			System.out.println("Usage : arg1 = Mode [INTERACTIVE|SESSION], arg2 = [mp3 file path or session file path]");
+		if (args.length < 2 || args.length > 3) {
+			System.out.println("Usage : arg1 = Mode [INTERACTIVE|SESSION], arg2 = [mp3 file path] , arg3 (only for session mode) = [session file path]");
 			System.exit(0);
 		}
 		
 		Mode mode = Mode.valueOf(args[0]);
-		
+		soloHelper.openMusicFile(args[1]);
+
 		if (mode == Mode.INTERACTIVE) {
-			soloHelper.openMusicFile(args[1]);
 			soloHelper.process();
 		} else {
+			if (args.length != 3) {
+				System.out.println("We need a session file argument");
+				System.exit(0);
+			}
 			// load the session.
+			soloHelper.executeSession(args[2]);
 		}
 		
 

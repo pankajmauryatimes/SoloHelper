@@ -29,6 +29,11 @@ public class CommandInterpreterImpl implements CommandInterpreter {
 	}
 	
 	@Override
+	public void loadCommandFromSession(String commandLine) {
+		this.commandLine = commandLine;
+	}
+	
+	@Override
 	public boolean validateCommandLine() {
 		// TODO: implement validation.
 		return true;

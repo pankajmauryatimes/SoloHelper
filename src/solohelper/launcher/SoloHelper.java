@@ -12,4 +12,6 @@ public interface SoloHelper {
 	void openMusicFile(String filePath);
 
 	void process() throws IOException;
+
+	void executeSession(String filePath);
 }

@@ -76,6 +76,9 @@ public class SoloHelperImpl implements SoloHelper {
 			clipMap.put(clipLabel, 
 				new MusicClipImpl(clipLabel, this.musicPlayer.getMusicPlayerSettings()));
 			return;
+		} else if (command == CommandCode.DELETE_CLIP) {
+			String clipLabel = commandArguments.getArgumentsList().get(0);
+			clipMap.remove(clipLabel);
 		} else if (command == CommandCode.LOAD_CLIP) {
 			String clipLabel = commandArguments.getArgumentsList().get(0);
 			MusicClip musicClip = clipMap.get(clipLabel);

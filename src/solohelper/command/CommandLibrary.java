@@ -74,6 +74,13 @@ public interface CommandLibrary {
 		SAVE_CLIP("save_clip", 1),
 		
 		/**
+		 * Deletes the clip with the given label from the in memory loaded map.
+		 * If followed by a save_info, will result in deleting the clip from the
+		 * clips file.
+		 */
+		DELETE_CLIP("delete_clip", 1),
+		
+		/**
 		 * Loads the music player settings previously saved with the given label.
 		 */
 		LOAD_CLIP("load_clip", 1),

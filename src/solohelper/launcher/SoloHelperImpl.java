@@ -30,6 +30,10 @@ public class SoloHelperImpl implements SoloHelper {
 		this.commandExecutorFactory = commandExecutorFactory;
 	}
 	
+	public void openSessionFile(String filePath) {
+		
+	}
+	
 	@Override
 	public void openMusicFile(String filePath) {
 		this.musicPlayer.loadMusicFile(filePath);

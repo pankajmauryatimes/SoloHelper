@@ -6,8 +6,8 @@ public class IOModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(MusicClipsReader.class).to(MusicClipsReaderImpl.class);
-		bind(MusicClipsWriter.class).to(MusicClipsWriterImpl.class);
+		bind(FileReader.class).to(FileReaderImpl.class);
+		bind(FileWriter.class).to(FileWriterImpl.class);
 	}
 
 }

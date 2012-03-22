@@ -11,6 +11,8 @@ public class ClipModule extends AbstractModule {
 		// is not by guice.
 		bind(MusicClipsManager.class).to(MusicClipsManagerImpl.class)
 			.in(Scopes.SINGLETON);
+		bind(MusicClipsReader.class).to(MusicClipsReaderImpl.class);
+		bind(MusicClipsWriter.class).to(MusicClipsWriterImpl.class);
 	}
 
 }

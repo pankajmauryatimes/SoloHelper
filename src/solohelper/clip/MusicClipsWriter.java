@@ -1,8 +1,7 @@
-package solohelper.io;
+package solohelper.clip;
 
 import java.util.Map;
 
-import solohelper.clip.MusicClip;
 
 public interface MusicClipsWriter {
 

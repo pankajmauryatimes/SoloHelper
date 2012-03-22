@@ -6,8 +6,6 @@ import java.util.TreeMap;
 import javax.inject.Inject;
 
 import solohelper.domain.MusicPlayer;
-import solohelper.io.MusicClipsReader;
-import solohelper.io.MusicClipsWriter;
 
 public class MusicClipsManagerImpl implements MusicClipsManager {
 	private final Map<String, MusicClip> clipMap;

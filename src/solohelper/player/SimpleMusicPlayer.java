@@ -62,7 +62,12 @@ public class SimpleMusicPlayer implements MusicPlayer {
 	@Override
 	public void play() {
 		System.out.println("Starting play.");
-		this.mp3Player.play();
+		if (this.musicPlayerSettingsManager.getMusicPlayerSettings().getLoopCount() > 1) {
+			this.mp3Player.play(true /*is looping?*/);	
+		} else {
+			this.mp3Player.play(false /*is not looping?*/);
+		}
+		
 	}
 	
 	@Override

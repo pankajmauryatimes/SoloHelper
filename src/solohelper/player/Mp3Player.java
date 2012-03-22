@@ -63,20 +63,20 @@ public class Mp3Player {
 		this.player.setPlayBackListener(playbackListener);
 	}
 	
-	public void play() {
+	public void play(boolean isLooping) {
 		this.executorService.execute(
 			new PlayMp3Task(musicPlayerSettings.getStartFramePosition(),
 			musicPlayerSettings.getStartFramePosition() +
-			musicPlayerSettings.getLoopingSliceFramesCount()));
+			musicPlayerSettings.getLoopingSliceFramesCount(),
+			isLooping));
 	}
-
 
 	public void loop() {
 		close();
 		load(this.musicFile);
 		this.setPlayBackListener(playbackListener);
 		pause();
-		play();
+		play(true);
 	}
 	
 	public void pause() {
@@ -95,6 +95,12 @@ public class Mp3Player {
 		}
 		
 		@Override
+		public void playbackStarted(PlaybackEvent arg0) {
+			super.playbackStarted(arg0);
+			stateOfPlay = StateOfPlay.ACTIVE;
+		}
+		
+		@Override
 		public void playbackFinished(PlaybackEvent playbackEvent) {
 			super.playbackFinished(playbackEvent);
 			System.out.println("playback finished");
@@ -106,6 +112,8 @@ public class Mp3Player {
 			
 			if (loopedCount < loopCount) {
 				loop();	
+			} else {
+				stateOfPlay = StateOfPlay.INACTIVE;
 			}
 		}
 	}
@@ -123,7 +131,6 @@ public class Mp3Player {
 			try {
 				stateOfPlay = StateOfPlay.PAUSED;
 				Thread.sleep(pauseMillis);
-				stateOfPlay = StateOfPlay.INACTIVE;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -133,10 +140,12 @@ public class Mp3Player {
     public class PlayMp3Task implements Runnable {
     	private final int startFrame;
 		private final int endFrame;
+		private final boolean isLoopingPlay;
 
-		public PlayMp3Task(final int startFrame, final int endFrame) {
+		public PlayMp3Task(final int startFrame, final int endFrame, boolean isLoopingPlay) {
 			this.startFrame = startFrame;
 			this.endFrame = endFrame;
+			this.isLoopingPlay = isLoopingPlay;
     	}
     	
 		@Override
@@ -146,7 +155,15 @@ public class Mp3Player {
 					String.format("Will play the window [%s, %s]", startFrame, endFrame));
 				stateOfPlay = StateOfPlay.ACTIVE;
 				player.play(startFrame, endFrame);
-				stateOfPlay = StateOfPlay.INACTIVE;
+				
+				/*
+				 * For non looping play we will set state of play to inactive here only.
+				 * For looping play, inactive is set at the end of all loops.
+				 */
+				if (!isLoopingPlay) {
+					stateOfPlay = StateOfPlay.INACTIVE;
+				}
+				
 			} catch (Exception e) { 
 				System.out.println(e); 
 			}			

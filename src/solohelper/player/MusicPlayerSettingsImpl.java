@@ -12,7 +12,7 @@ import solohelper.domain.MusicPlayerSettings;
  */
 public class MusicPlayerSettingsImpl implements MusicPlayerSettings {
 
-	private static final int minWindowSize = 400;
+	private static final int minWindowSize = 10;
 	private LoopingMode loopingMode;
 	private int loopingSliceFrameCount;
 	private int startFramePosition;

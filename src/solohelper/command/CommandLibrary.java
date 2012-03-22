@@ -75,12 +75,17 @@ public interface CommandLibrary {
 		 * Saves all the currently saved in-memory music player settings
 		 * to a file.
 		 */
-		SAVE_INFO("save_info", 1),
+		SAVE_INFO("save_info", 0),
 		
 		/**
 		 * Loads the info saved previously in a file.
 		 */
-		LOAD_INFO("load_info", 1);
+		LOAD_INFO("load_info", 0),
+		
+		/**
+		 * Shows all clips currently saved in current project.
+		 */
+		SHOW_CLIPS("show_clips", 0);
 		
 		private final String commandWord;
 		private final int numArguments;

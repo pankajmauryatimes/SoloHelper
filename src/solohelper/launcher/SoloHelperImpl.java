@@ -1,12 +1,14 @@
 package solohelper.launcher;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -17,15 +19,17 @@ import solohelper.command.CommandExecutor;
 import solohelper.command.CommandInterpreter;
 import solohelper.command.CommandLibrary.CommandCode;
 import solohelper.domain.MusicPlayer;
-import solohelper.domain.MusicPlayerSettings;
 
 public class SoloHelperImpl implements SoloHelper {
 
+	private static final String CLIP_FILE_SUFFIX = ".solohelper.txt";
 	private final MusicPlayer musicPlayer;
 	private final CommandInterpreter commandInterpreter;
 	private final CommandExecutor commandExecutor;
 	private final Map<String, MusicClip> clipMap 
 		= new TreeMap<String, MusicClip>();
+	private String filePath;
+	private String configFileName;
 
 	@Inject
 	public SoloHelperImpl(MusicPlayer musicPlayer,
@@ -43,7 +47,9 @@ public class SoloHelperImpl implements SoloHelper {
 	
 	@Override
 	public void openMusicFile(String filePath) {
+		this.filePath = filePath;
 		this.musicPlayer.loadMusicFile(filePath);
+		configFileName = this.filePath + CLIP_FILE_SUFFIX;
 	}
 	
 	@Override
@@ -66,36 +72,57 @@ public class SoloHelperImpl implements SoloHelper {
 		if (command == CommandCode.QUIT) {
 			System.exit(0);
 		} else if (command == CommandCode.SAVE_CLIP) {
-				String clipLabel = commandArguments.getArgumentsList().get(0);
-				
-				clipMap.put(clipLabel, 
-						new MusicClipImpl(clipLabel, this.musicPlayer.getMusicPlayerSettings()));
-				return;
+			String clipLabel = commandArguments.getArgumentsList().get(0);
+			clipMap.put(clipLabel, 
+				new MusicClipImpl(clipLabel, this.musicPlayer.getMusicPlayerSettings()));
+			return;
 		} else if (command == CommandCode.LOAD_CLIP) {
 			String clipLabel = commandArguments.getArgumentsList().get(0);
 			MusicClip musicClip = clipMap.get(clipLabel);
 			this.musicPlayer.setMusicPlayerSettings(musicClip.getMusicPlayerSettings());
 			return;
 		} else if (command == CommandCode.SAVE_INFO) {
-			String configFileName = commandArguments.getArgumentsList().get(0);
 			writeClips(configFileName);
 		} else if (command == CommandCode.LOAD_INFO) {
-			String configFileName = commandArguments.getArgumentsList().get(0);
-			System.out.println("loading not yet implemented");
+			readClips(configFileName);
+		} else if (command == CommandCode.SHOW_CLIPS) { 
+			for (MusicClip clip : clipMap.values()) {
+	        	System.out.println(clip.toString());
+	        }
 		} else {
 			this.musicPlayer.issueCommand(command, commandArguments);	
 		}
 	}
 	
+	public void readClips(String configFileName) {
+		try {
+			clipMap.clear();
+			FileInputStream fis = new FileInputStream(configFileName);
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			InputStreamReader isr = new InputStreamReader(bis);
+			BufferedReader br = new BufferedReader(isr);
+			
+			do {
+				String line = br.readLine();
+				if (line == null) {
+					return;
+				}
+				MusicClipImpl clip = new MusicClipImpl(line);
+				clipMap.put(clip.getLabel(), clip);
+			} while (true);
+		} catch (IOException e) {
+			System.out.println("Failed to read file " + configFileName);
+		}
+	}
 	
 	public void writeClips(String configFileName) {
 		try {
-			FileOutputStream fos = new FileOutputStream(configFileName);
+			FileOutputStream fos = new FileOutputStream(configFileName, true /*append*/);
 	        BufferedOutputStream bos = new BufferedOutputStream(fos);
 	        OutputStreamWriter osw = new OutputStreamWriter(bos);
 	        BufferedWriter writer = new BufferedWriter(osw);
 	        for (MusicClip clip : clipMap.values()) {
-	        	writer.write(clip.toString());
+	        	writer.write(clip.getCsvString());
 	        }
 	        writer.flush();
 	        writer.close();	

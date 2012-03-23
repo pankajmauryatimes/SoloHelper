@@ -14,7 +14,7 @@ public interface CommandInterpreter {
 
 	void readCommandLine() throws IOException;
 
-	boolean validateCommandLine();
+	boolean isValidCommand();
 
 	CommandCode getCommandCode();
 

@@ -40,9 +40,18 @@ public class SoloHelperImpl implements SoloHelper {
 		List<String> sessionContents = fileReader.readLines(filePath);
 		for (String command : sessionContents) {
 			commandInterpreter.loadCommandFromSession(command);
+			validateAndExecuteCommand();
+		}
+	}
+
+	private void validateAndExecuteCommand() {
+		if (commandInterpreter.isValidCommand()) {
 			CommandCode advancedCommand = commandInterpreter.getCommandCode();
 			CommandArgumentsImpl commandArguments = commandInterpreter.getCommandArguments();
 			this.commandExecutor.executeCommand(advancedCommand, commandArguments);
+		} else {
+			System.out.println("Bad command : " + this.commandInterpreter.getCommandCode() 
+					+ " expects " + this.commandInterpreter.getCommandCode().getNumArguments() + " arguments.");
 		}
 	}
 	
@@ -58,9 +67,7 @@ public class SoloHelperImpl implements SoloHelper {
 		do {
 			System.out.println("Enter command :");
 			commandInterpreter.readCommandLine();
-			CommandCode advancedCommand = commandInterpreter.getCommandCode();
-			CommandArgumentsImpl commandArguments = commandInterpreter.getCommandArguments();
-			this.commandExecutor.executeCommand(advancedCommand, commandArguments);
+			validateAndExecuteCommand();
 		} while (true);
 	}
 }

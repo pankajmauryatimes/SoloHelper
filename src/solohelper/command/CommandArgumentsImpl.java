@@ -25,6 +25,7 @@ public class CommandArgumentsImpl implements CommandArguments {
 	public List<String> getArgumentsList() {
 		int numArguments = this.commandCode.getNumArguments();
 		StringTokenizer tokenizer = new StringTokenizer(commandLine);
+		
 		// the command code
 		tokenizer.nextToken();
 		

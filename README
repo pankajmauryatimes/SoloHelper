@@ -7,3 +7,8 @@ arg3 = session file path (only applicable for session mode.
 
 To run from command line, one should create an executible jar (option in
 eclipse) and that should include all the jars in the lib.
+
+INTERACTIVE Mode.
+Enter command :
+help (<<-- enter this to see list of commands).
+

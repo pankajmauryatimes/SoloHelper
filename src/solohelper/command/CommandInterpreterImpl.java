@@ -26,23 +26,35 @@ public class CommandInterpreterImpl implements CommandInterpreter {
 	
 	@Override
 	public void readCommandLine() throws IOException {
-		commandLine = bufferedReader.readLine();
+		setCommandLine(bufferedReader.readLine());
 	}
 	
 	@Override
 	public void loadCommandFromSession(String commandLine) {
-		this.commandLine = commandLine;
+		this.setCommandLine(commandLine);
 	}
 	
 	@Override
 	public boolean isValidCommand() {
+		if (isComment()) {
+			return false;
+		}
+		
+		if (getCommandLine().startsWith("#") || getCommandLine().startsWith("//")) {
+			return false;
+		}
+		
 		CommandCode commandCode = getCommandCode();
+		
+		if (commandCode == null) {
+			return false;
+		}
 		
 		if (commandCode == CommandCode.PRINT) {
 			return true;
 		} else {
 			int expectedNumTokens = commandCode.getNumArguments() + 1;
-			StringTokenizer tokenizer = new StringTokenizer(this.commandLine);
+			StringTokenizer tokenizer = new StringTokenizer(this.getCommandLine());
 			if (tokenizer.countTokens() != expectedNumTokens) {
 				System.out.println("Found tokens " + tokenizer.countTokens() + ", expected " + expectedNumTokens);
 				return false;
@@ -54,11 +66,28 @@ public class CommandInterpreterImpl implements CommandInterpreter {
 	
 	@Override
 	public CommandCode getCommandCode() {
-		return this.commandLibrary.getAdvancedCommand(this.commandLine);
+		return this.commandLibrary.getAdvancedCommand(this.getCommandLine());
 	}
 	
 	@Override
 	public CommandArgumentsImpl getCommandArguments() {
-		return new CommandArgumentsImpl(getCommandCode(), this.commandLine);
+		return new CommandArgumentsImpl(getCommandCode(), this.getCommandLine());
 	}
+
+	public void setCommandLine(String commandLine) {
+		this.commandLine = commandLine;
+	}
+
+	@Override
+	public String getCommandLine() {
+		return commandLine;
+	}
+	
+	private boolean isComment() {
+		if (getCommandLine().startsWith("#") || getCommandLine().startsWith("//")) {
+			return true;
+		}
+		return false;
+	}
+
 }

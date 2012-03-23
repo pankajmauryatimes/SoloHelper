@@ -50,8 +50,7 @@ public class SoloHelperImpl implements SoloHelper {
 			CommandArgumentsImpl commandArguments = commandInterpreter.getCommandArguments();
 			this.commandExecutor.executeCommand(advancedCommand, commandArguments);
 		} else {
-			System.out.println("Bad command : " + this.commandInterpreter.getCommandCode() 
-					+ " expects " + this.commandInterpreter.getCommandCode().getNumArguments() + " arguments.");
+			System.out.println("Bad command : " + this.commandInterpreter.getCommandLine());
 		}
 	}
 	

@@ -1,0 +1,9 @@
+SoloHelper Program Readme
+
+Currently I am running this only from eclipse with arguments format:
+arg1 = Mode [INTERACTIVE | SESSION]
+arg2 = music file (mp3 only currently) path
+arg3 = session file path (only applicable for session mode.
+
+To run from command line, one should create an executible jar (option in
+eclipse) and that should include all the jars in the lib.

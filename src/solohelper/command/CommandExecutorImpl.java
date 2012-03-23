@@ -38,6 +38,10 @@ public class CommandExecutorImpl implements CommandExecutor {
 	public void executeCommand(CommandCode command, CommandArgumentsImpl commandArguments) {
 		if (command == CommandCode.QUIT) {
 			System.exit(0);
+		} else if (command == CommandCode.HELP) {
+			for (CommandCode availableCommand : CommandCode.values()) {
+				System.out.println(availableCommand + " " + availableCommand.getNumArguments() + " arguments " + availableCommand.getDescription());
+			}
 		} else if (command == CommandCode.SAVE_CLIP) {
 			String clipLabel = commandArguments.getArgumentsList().get(0);
 			this.musicClipsManager.saveClip(clipLabel);

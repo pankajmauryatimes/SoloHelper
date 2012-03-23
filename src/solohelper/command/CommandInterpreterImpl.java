@@ -35,7 +35,7 @@ public class CommandInterpreterImpl implements CommandInterpreter {
 	
 	@Override
 	public boolean validateCommandLine() {
-		// TODO: implement validation.
+		// TODO: implement
 		return true;
 	}
 	
@@ -48,5 +48,4 @@ public class CommandInterpreterImpl implements CommandInterpreter {
 	public CommandArgumentsImpl getCommandArguments() {
 		return new CommandArgumentsImpl(getCommandCode(), this.commandLine);
 	}
-	
 }

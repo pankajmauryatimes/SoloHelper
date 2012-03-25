@@ -1,0 +1,1 @@
+loopable_solo_one,5,6581,1220,0

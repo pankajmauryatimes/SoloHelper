@@ -1,0 +1,4 @@
+line_of_chorus,0,263,120,0
+open_riff_loopable,100,145,118,0
+solo_line1_loopable,3,3335,230,100
+solo_tapping_part_loopable,5,3690,241,150

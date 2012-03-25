@@ -1,0 +1,26 @@
+print A simple session for "Have a cigar" by Pink Floyd.
+load_info
+show_clips
+print Loading clip - s1+2...
+load_clip s1+2
+play
+till_sop INACTIVE
+print Loading clip - s3...
+load_clip s3
+play
+till_sop INACTIVE
+print Loading clip - s4...
+load_clip s4
+play
+till_sop INACTIVE
+print Loading clip - s5.1...
+load_clip s5.1
+play
+till_sop INACTIVE
+print Loading clip - s5.2...
+load_clip s5.2
+play
+till_sop INACTIVE
+print End of session.
+quit
+

@@ -1,0 +1,10 @@
+print A simple session for "Living loving maid" by Led Zeppelin.
+load_info
+show_clips
+print Loading clip - open_riff_loopable...
+load_clip open_riff_loopable
+play
+till_sop INACTIVE
+print End of session.
+quit
+

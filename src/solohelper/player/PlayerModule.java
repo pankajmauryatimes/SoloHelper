@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import solohelper.domain.MusicFile;
+import solohelper.domain.MusicMetaInfo;
 import solohelper.domain.MusicPlayer;
 import solohelper.domain.MusicPlayerSettings;
 import solohelper.domain.MusicPlayerSettingsManager;
@@ -29,6 +30,10 @@ public class PlayerModule extends AbstractModule {
 		install(new FactoryModuleBuilder()
 			.implement(MusicFile.class, Mp3MusicFile.class)
 			.build(Mp3MusicFile.Factory.class));
+		
+		install(new FactoryModuleBuilder()
+			.implement(MusicMetaInfo.class, Mp3MusicMetaInfo.class)
+			.build(Mp3MusicMetaInfo.Factory.class));
 		
 		install(new FactoryModuleBuilder()
 			.implement(MusicPlayerSettingsManager.class, MusicPlayerSettingsManagerImpl.class)

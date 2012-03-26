@@ -10,6 +10,7 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 import solohelper.domain.MusicFile;
+import solohelper.domain.MusicMetaInfo;
 import solohelper.domain.MusicPlayerSettings;
 import solohelper.domain.StateOfPlay;
 
@@ -26,6 +27,7 @@ public class Mp3Player {
 	private StateOfPlay stateOfPlay;
 	private PlaybackListener playbackListener;
 	private MusicPlayerSettings musicPlayerSettings;
+	private MusicMetaInfo musicMetaInfo;
 
 	@Inject
 	public Mp3Player(ExecutorService executorService) {
@@ -35,6 +37,14 @@ public class Mp3Player {
 		
 	public void load(MusicFile musicFile) {
 		this.musicFile = musicFile;
+		musicMetaInfo = this.musicFile.getMusicMetaInfo();
+		
+		System.out.println("We have loaded the file with the meta info:\n");
+		System.out.println("FilePath = " + musicMetaInfo.getFilePath());
+		System.out.println("Artist = " + musicMetaInfo.getArtist());
+		System.out.println("Album = " + musicMetaInfo.getAlbum());
+		System.out.println("DurationInSeconds = " + musicMetaInfo.getDurationInSeconds());
+		
 		String filePath = musicFile.getFilePath();
 		try {
 			FileInputStream fis = new FileInputStream(filePath);

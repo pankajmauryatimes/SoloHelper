@@ -8,4 +8,12 @@ package solohelper.domain;
  */
 public interface MusicMetaInfo {
 
+	String getFilePath();
+
+	int getDurationInSeconds();
+
+	String getArtist();
+
+	String getAlbum();
+
 }

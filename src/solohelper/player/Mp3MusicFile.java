@@ -11,10 +11,13 @@ import com.google.inject.assistedinject.Assisted;
 public class Mp3MusicFile implements MusicFile {
 
 	private final String filePath;
+	private final Mp3MusicMetaInfo musicMetaInfo;
 
 	@Inject
-	public Mp3MusicFile(@Assisted("filePath") String filePath) {
+	public Mp3MusicFile(@Assisted("filePath") String filePath,
+			Mp3MusicMetaInfo.Factory factory) {
 		this.filePath = filePath;
+		musicMetaInfo = factory.create(filePath);
 	}
 	
 	public interface Factory {
@@ -28,7 +31,7 @@ public class Mp3MusicFile implements MusicFile {
 
 	@Override
 	public MusicMetaInfo getMusicMetaInfo() {
-		return null;
+		return musicMetaInfo;
 	}
 
 	@Override

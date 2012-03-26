@@ -16,4 +16,6 @@ public interface MusicMetaInfo {
 
 	String getAlbum();
 
+	String getTrack();
+
 }

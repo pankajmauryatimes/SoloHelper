@@ -15,6 +15,7 @@ public class Mp3MusicMetaInfo implements MusicMetaInfo {
 	private int durationInSeconds;
 	private String artist;
 	private String album;
+	private String track;
 
 	@Inject
 	public Mp3MusicMetaInfo(@Assisted("filePath") String filePath) {
@@ -38,6 +39,9 @@ public class Mp3MusicMetaInfo implements MusicMetaInfo {
 			setDurationInSeconds(mp3File.getSeconds());
 			setArtist(mp3File.getArtist());
 			setAlbum(mp3File.getAlbum());
+			setTrack(mp3File.getTrack());
+			
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -68,5 +72,14 @@ public class Mp3MusicMetaInfo implements MusicMetaInfo {
 	@Override
 	public String getAlbum() {
 		return album;
+	}
+
+	public void setTrack(String track) {
+		this.track = track;
+	}
+
+	@Override
+	public String getTrack() {
+		return track;
 	}
 }

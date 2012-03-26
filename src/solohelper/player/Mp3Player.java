@@ -38,9 +38,9 @@ public class Mp3Player {
 	public void load(MusicFile musicFile) {
 		this.musicFile = musicFile;
 		musicMetaInfo = this.musicFile.getMusicMetaInfo();
-		
-		System.out.println("We have loaded the file with the meta info:\n");
+		System.out.println("----------------------------------------------------------");
 		System.out.println("FilePath = " + musicMetaInfo.getFilePath());
+		System.out.println("Track = " + musicMetaInfo.getTrack());
 		System.out.println("Artist = " + musicMetaInfo.getArtist());
 		System.out.println("Album = " + musicMetaInfo.getAlbum());
 		System.out.println("DurationInSeconds = " + musicMetaInfo.getDurationInSeconds());

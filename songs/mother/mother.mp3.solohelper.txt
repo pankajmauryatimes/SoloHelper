@@ -1,1 +1,4 @@
 loopable_solo_one,5,6581,1220,0
+solo_line1,0,6561,550,0
+solo_line2,2,7061,300,0
+solo_line3,2,7351,400,0
